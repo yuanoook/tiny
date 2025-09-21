@@ -96,10 +96,11 @@
             class="card-dot header-card" 
             v-for="card in getCardsInRowHeader(zone.id)" 
             :key="`row-header-${card.id}`"
-            :class="[card.color, { 'dragging': isDragging(card) }]"
+            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
+            @dblclick="toggleCardDisguise(card)"
           >
           </div>
         </div>
@@ -140,10 +141,11 @@
             class="card-dot header-card" 
             v-for="card in getCardsInRowHeader(player.id)" 
             :key="`row-header-${card.id}`"
-            :class="[card.color, { 'dragging': isDragging(card) }]"
+            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
+            @dblclick="toggleCardDisguise(card)"
           >
           </div>
         </div>
@@ -184,10 +186,11 @@
             class="card-dot header-card" 
             v-for="card in getCardsInRowHeader(zone.id)" 
             :key="`row-header-${card.id}`"
-            :class="[card.color, { 'dragging': isDragging(card) }]"
+            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
+            @dblclick="toggleCardDisguise(card)"
           >
           </div>
         </div>
@@ -220,7 +223,10 @@
     <div 
       v-if="draggingCard" 
       class="card-dot dragging-card" 
-      :class="draggingCard.color"
+      :class="[
+        draggingCard.isDisguised ? draggingCard.disguiseColor : draggingCard.color,
+        { 'disguised': draggingCard.isDisguised, 'hidden': draggingCard.visibility === 'hidden' }
+      ]"
       :style="draggingCardStyle"
     >
     </div>
@@ -237,17 +243,15 @@
     <!-- 卡牌操作弹窗 -->
     <div class="modal-overlay" v-if="showCardModal" @click="showCardModal = false">
       <div class="card-modal" @click.stop>
-        <h3>选择卡牌操作</h3>
         <div class="modal-options-circles">
           <div class="option-circle" 
-               :class="currentCard && currentCard.visibility === 'hidden' ? 'hidden' : currentCard && currentCard.color"
+               :class="currentCard && currentCard.visibility === 'hidden' ? currentCard.color : 'hidden'"
                @click="toggleCardVisibility">
           </div>
           <div class="option-circle red" @click="setDisguiseColor('red')"></div>
           <div class="option-circle yellow" @click="setDisguiseColor('yellow')"></div>
           <div class="option-circle green" @click="setDisguiseColor('green')"></div>
         </div>
-        <button class="close-button" @click="showCardModal = false">关闭</button>
       </div>
     </div>
   </div>
@@ -272,14 +276,14 @@ export default {
         
         // 卡牌数据 (新的设计：owner表示拥有者，to表示目标区域)
         cards: [
-          { id: 1, color: 'red', owner: 'deck' },
-          { id: 2, color: 'yellow', owner: 'deck' },
-          { id: 3, color: 'green', owner: 'deck' },
-          { id: 4, color: 'red', owner: 'player1' },
-          { id: 5, color: 'yellow', owner: 'player1' },
-          { id: 6, color: 'green', owner: 'player2' },
-          { id: 7, color: 'red', owner: 'player1', to: 'player2' },
-          { id: 8, color: 'yellow', owner: 'player2', to: 'player1' }
+          { id: 1, color: 'red', owner: 'deck', visibility: 'hidden' },
+          { id: 2, color: 'yellow', owner: 'deck', visibility: 'hidden' },
+          { id: 3, color: 'green', owner: 'deck', visibility: 'hidden' },
+          { id: 4, color: 'red', owner: 'player1', visibility: 'hidden' },
+          { id: 5, color: 'yellow', owner: 'player1', visibility: 'hidden' },
+          { id: 6, color: 'green', owner: 'player2', visibility: 'hidden' },
+          { id: 7, color: 'red', owner: 'player1', to: 'player2', visibility: 'hidden' },
+          { id: 8, color: 'yellow', owner: 'player2', to: 'player1', visibility: 'hidden' }
         ],
         
         // 拖拽状态
@@ -329,7 +333,22 @@ export default {
       ].filter(zone => zone !== undefined);
     }
   },
+  mounted() {
+    // 添加键盘事件监听器
+    document.addEventListener('keydown', this.handleKeydown);
+  },
+  beforeUnmount() {
+    // 移除键盘事件监听器
+    document.removeEventListener('keydown', this.handleKeydown);
+  },
   methods: {
+    // 处理键盘事件
+    handleKeydown(event) {
+      // 如果按下了ESC键且弹窗是打开的，则关闭弹窗
+      if (event.key === 'Escape' && this.showCardModal) {
+        this.showCardModal = false;
+      }
+    },
     // 显示卡牌操作弹窗
     toggleCardDisguise(card) {
       this.currentCard = card;
@@ -364,17 +383,18 @@ export default {
     // 设置卡牌伪装颜色
     setDisguiseColor(color) {
       if (this.currentCard) {
-        // 明牌才能伪装
-        if (!this.currentCard.visibility || this.currentCard.visibility !== 'hidden') {
-          // 如果点击的是当前颜色，则取消伪装
-          if (this.currentCard.isDisguised && this.currentCard.disguiseColor === color) {
-            // 取消伪装
-            this.currentCard.isDisguised = false;
-            delete this.currentCard.disguiseColor;
-          } else {
-            // 设置伪装状态和颜色
-            this.currentCard.isDisguised = true;
-            this.currentCard.disguiseColor = color;
+        // 如果点击的是当前伪装颜色，则取消伪装
+        if (this.currentCard.isDisguised && this.currentCard.disguiseColor === color) {
+          // 取消伪装
+          this.currentCard.isDisguised = false;
+          delete this.currentCard.disguiseColor;
+        } else {
+          // 设置伪装状态和颜色
+          this.currentCard.isDisguised = true;
+          this.currentCard.disguiseColor = color;
+          // 如果是明牌，变为暗牌以保持伪装状态
+          if (!this.currentCard.visibility) {
+            this.currentCard.visibility = 'hidden';
           }
         }
         this.showCardModal = false;
@@ -662,8 +682,25 @@ export default {
 
 /* 伪装卡牌样式 */
 .card-dot.disguised {
-  border: 2px dashed #000 !important;
   position: relative;
+}
+
+/* 伪装卡牌的斜纹半透明白色覆盖 */
+.card-dot.disguised::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.5) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  border-radius: 50%;
 }
 
 /* 拖拽时隐藏原位置的卡牌 */
@@ -672,9 +709,9 @@ export default {
 }
 
 /* 隐藏卡牌样式 */
-.card-dot.hidden {
+.card-dot.hidden:not(.disguised) {
   background-color: #9e9e9e;
-  border: 1px solid #616161;
+  border: 2px solid #616161;
 }
 
 /* 拖拽时跟随鼠标的卡牌样式 */
@@ -786,7 +823,76 @@ export default {
 
 .option-circle.hidden {
   background-color: #9e9e9e;
-  border: 1px solid #616161;
+  border: 2px solid #616161;
+}
+
+.option-circle.red {
+  background-color: #ff6b6b;
+  border: 2px solid #d32f2f;
+  position: relative;
+}
+
+.option-circle.red::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.5) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  border-radius: 50%;
+}
+
+.option-circle.yellow {
+  background-color: #f9c942;
+  border: 2px solid #fbc02d;
+  position: relative;
+}
+
+.option-circle.yellow::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.5) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  border-radius: 50%;
+}
+
+.option-circle.green {
+  background-color: #51cf66;
+  border: 2px solid #388e3c;
+  position: relative;
+}
+
+.option-circle.green::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.5) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  border-radius: 50%;
 }
 
 /* 调整弹窗选项布局，使用纯圆点 */
@@ -814,6 +920,10 @@ export default {
 
 .modal-options-circles .option-circle:first-child {
   margin-right: 30px;
+}
+
+.modal-options-circles .option-circle:first-child::after {
+  display: none;
 }
 
 .modal-options-circles .option-circle:not(:first-child) {
