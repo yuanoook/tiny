@@ -238,25 +238,14 @@
     <div class="modal-overlay" v-if="showCardModal" @click="showCardModal = false">
       <div class="card-modal" @click.stop>
         <h3>选择卡牌操作</h3>
-        <div class="modal-options">
-          <div class="modal-option" @click="toggleCardVisibility">
-            <div class="option-circle" :class="currentCard && currentCard.visibility === 'hidden' ? 'hidden' : currentCard && currentCard.color">
-              {{ currentCard && currentCard.visibility === 'hidden' ? '?' : '' }}
-            </div>
-            <span>{{ currentCard && currentCard.visibility === 'hidden' ? '明牌' : '暗牌' }}</span>
+        <div class="modal-options-circles">
+          <div class="option-circle" 
+               :class="currentCard && currentCard.visibility === 'hidden' ? 'hidden' : currentCard && currentCard.color"
+               @click="toggleCardVisibility">
           </div>
-          <div class="modal-option" @click="setDisguiseColor('red')">
-            <div class="option-circle red"></div>
-            <span>伪装成红牌</span>
-          </div>
-          <div class="modal-option" @click="setDisguiseColor('yellow')">
-            <div class="option-circle yellow"></div>
-            <span>伪装成黄牌</span>
-          </div>
-          <div class="modal-option" @click="setDisguiseColor('green')">
-            <div class="option-circle green"></div>
-            <span>伪装成绿牌</span>
-          </div>
+          <div class="option-circle red" @click="setDisguiseColor('red')"></div>
+          <div class="option-circle yellow" @click="setDisguiseColor('yellow')"></div>
+          <div class="option-circle green" @click="setDisguiseColor('green')"></div>
         </div>
         <button class="close-button" @click="showCardModal = false">关闭</button>
       </div>
@@ -377,9 +366,16 @@ export default {
       if (this.currentCard) {
         // 明牌才能伪装
         if (!this.currentCard.visibility || this.currentCard.visibility !== 'hidden') {
-          // 设置伪装状态和颜色
-          this.currentCard.isDisguised = true;
-          this.currentCard.disguiseColor = color;
+          // 如果点击的是当前颜色，则取消伪装
+          if (this.currentCard.isDisguised && this.currentCard.disguiseColor === color) {
+            // 取消伪装
+            this.currentCard.isDisguised = false;
+            delete this.currentCard.disguiseColor;
+          } else {
+            // 设置伪装状态和颜色
+            this.currentCard.isDisguised = true;
+            this.currentCard.disguiseColor = color;
+          }
         }
         this.showCardModal = false;
       }
@@ -666,7 +662,7 @@ export default {
 
 /* 伪装卡牌样式 */
 .card-dot.disguised {
-  border: 2px dashed #000;
+  border: 2px dashed #000 !important;
   position: relative;
 }
 
@@ -791,6 +787,37 @@ export default {
 .option-circle.hidden {
   background-color: #9e9e9e;
   border: 1px solid #616161;
+}
+
+/* 调整弹窗选项布局，使用纯圆点 */
+.modal-options-simple {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.modal-options-circles {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 20px 0;
+  padding: 10px 0;
+}
+
+.modal-options-circles .option-circle {
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.modal-options-circles .option-circle:first-child {
+  margin-right: 30px;
+}
+
+.modal-options-circles .option-circle:not(:first-child) {
+  margin: 0 5px;
 }
 
 .close-button {
