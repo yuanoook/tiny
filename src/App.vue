@@ -29,10 +29,11 @@
             class="card-dot header-card" 
             v-for="card in getCardsInColumnHeader(zone.id)" 
             :key="`col-header-${card.id}`"
-            :class="[card.color, { 'dragging': isDragging(card) }]"
+            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
+            @dblclick="toggleCardDisguise(card)"
           >
           </div>
         </div>
@@ -50,10 +51,11 @@
             class="card-dot header-card" 
             v-for="card in getCardsInColumnHeader(player.id)" 
             :key="`col-header-${card.id}`"
-            :class="[card.color, { 'dragging': isDragging(card) }]"
+            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
+            @dblclick="toggleCardDisguise(card)"
           >
           </div>
         </div>
@@ -71,10 +73,11 @@
             class="card-dot header-card" 
             v-for="card in getCardsInColumnHeader(zone.id)" 
             :key="`col-header-${card.id}`"
-            :class="[card.color, { 'dragging': isDragging(card) }]"
+            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
+            @dblclick="toggleCardDisguise(card)"
           >
           </div>
         </div>
@@ -114,10 +117,11 @@
             class="card-dot" 
             v-for="card in getCardsInCell(zone.id, colZone.id)" 
             :key="`${card.id}`"
-            :class="[card.color, { 'dragging': isDragging(card) }]"
+            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
+            @dblclick="toggleCardDisguise(card)"
           >
           </div>
         </div>
@@ -157,10 +161,11 @@
             class="card-dot" 
             v-for="card in getCardsInCell(player.id, colZone.id)" 
             :key="`${card.id}`"
-            :class="[card.color, { 'dragging': isDragging(card) }]"
+            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
+            @dblclick="toggleCardDisguise(card)"
           >
           </div>
         </div>
@@ -200,10 +205,11 @@
             class="card-dot" 
             v-for="card in getCardsInCell(zone.id, colZone.id)" 
             :key="`${card.id}`"
-            :class="[card.color, { 'dragging': isDragging(card) }]"
+            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
+            @dblclick="toggleCardDisguise(card)"
           >
           </div>
         </div>
@@ -225,6 +231,34 @@
       <div class="player" v-for="player in players" :key="player.id">
         {{ player.name }}
         <button v-if="players.length > 2" @click="removePlayer(player.id)">移除</button>
+      </div>
+    </div>
+    
+    <!-- 卡牌操作弹窗 -->
+    <div class="modal-overlay" v-if="showCardModal" @click="showCardModal = false">
+      <div class="card-modal" @click.stop>
+        <h3>选择卡牌操作</h3>
+        <div class="modal-options">
+          <div class="modal-option" @click="toggleCardVisibility">
+            <div class="option-circle" :class="currentCard && currentCard.visibility === 'hidden' ? 'hidden' : currentCard && currentCard.color">
+              {{ currentCard && currentCard.visibility === 'hidden' ? '?' : '' }}
+            </div>
+            <span>{{ currentCard && currentCard.visibility === 'hidden' ? '明牌' : '暗牌' }}</span>
+          </div>
+          <div class="modal-option" @click="setDisguiseColor('red')">
+            <div class="option-circle red"></div>
+            <span>伪装成红牌</span>
+          </div>
+          <div class="modal-option" @click="setDisguiseColor('yellow')">
+            <div class="option-circle yellow"></div>
+            <span>伪装成黄牌</span>
+          </div>
+          <div class="modal-option" @click="setDisguiseColor('green')">
+            <div class="option-circle green"></div>
+            <span>伪装成绿牌</span>
+          </div>
+        </div>
+        <button class="close-button" @click="showCardModal = false">关闭</button>
       </div>
     </div>
   </div>
@@ -266,7 +300,11 @@ export default {
         dragOffsetY: 0,
         // 拖拽卡牌的当前位置
         dragX: 0,
-        dragY: 0
+        dragY: 0,
+        
+        // 弹窗状态
+        showCardModal: false,
+        currentCard: null
       };
     },
   computed: {
@@ -303,6 +341,49 @@ export default {
     }
   },
   methods: {
+    // 显示卡牌操作弹窗
+    toggleCardDisguise(card) {
+      this.currentCard = card;
+      this.showCardModal = true;
+    },
+    
+    // 切换卡牌明暗状态
+    toggleCardVisibility() {
+      if (this.currentCard) {
+        // 切换卡牌的可见性
+        if (this.currentCard.visibility === 'hidden') {
+          // 如果是暗牌，变为明牌
+          delete this.currentCard.visibility;
+          // 如果之前是伪装牌，取消伪装
+          if (this.currentCard.isDisguised) {
+            delete this.currentCard.isDisguised;
+            delete this.currentCard.disguiseColor;
+          }
+        } else {
+          // 如果是明牌，变为暗牌
+          this.currentCard.visibility = 'hidden';
+          // 取消伪装状态
+          if (this.currentCard.isDisguised) {
+            delete this.currentCard.isDisguised;
+            delete this.currentCard.disguiseColor;
+          }
+        }
+        this.showCardModal = false;
+      }
+    },
+    
+    // 设置卡牌伪装颜色
+    setDisguiseColor(color) {
+      if (this.currentCard) {
+        // 明牌才能伪装
+        if (!this.currentCard.visibility || this.currentCard.visibility !== 'hidden') {
+          // 设置伪装状态和颜色
+          this.currentCard.isDisguised = true;
+          this.currentCard.disguiseColor = color;
+        }
+        this.showCardModal = false;
+      }
+    },
     // 判断是否为中心区域（工作区/待转区）
     isCenterZone(rowZoneId, colZoneId) {
       // 中心区域是所有交叉的格子
@@ -569,23 +650,35 @@ export default {
 }
 
 .card-dot.red {
-  background-color: #f44336;
+  background-color: #ff6b6b;
   border: 2px solid #d32f2f;
 }
 
 .card-dot.yellow {
-  background-color: #ffeb3b;
+  background-color: #f9c942;
   border: 2px solid #fbc02d;
 }
 
 .card-dot.green {
-  background-color: #4caf50;
+  background-color: #51cf66;
   border: 2px solid #388e3c;
+}
+
+/* 伪装卡牌样式 */
+.card-dot.disguised {
+  border: 2px dashed #000;
+  position: relative;
 }
 
 /* 拖拽时隐藏原位置的卡牌 */
 .card-dot.dragging {
   opacity: 0;
+}
+
+/* 隐藏卡牌样式 */
+.card-dot.hidden {
+  background-color: #9e9e9e;
+  border: 1px solid #616161;
 }
 
 /* 拖拽时跟随鼠标的卡牌样式 */
@@ -618,5 +711,100 @@ export default {
   background-color: #f44336;
   color: white;
   cursor: pointer;
+}
+
+/* 弹窗样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.card-modal {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 300px;
+}
+
+.card-modal h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.modal-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.modal-option {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-option:hover {
+  background-color: #f5f5f5;
+}
+
+.option-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+}
+
+.option-circle.red {
+  background-color: #ff6b6b;
+  border: 2px solid #d32f2f;
+}
+
+.option-circle.yellow {
+  background-color: #f9c942;
+  border: 2px solid #fbc02d;
+}
+
+.option-circle.green {
+  background-color: #51cf66;
+  border: 2px solid #388e3c;
+}
+
+.option-circle.hidden {
+  background-color: #9e9e9e;
+  border: 1px solid #616161;
+}
+
+.close-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.close-button:hover {
+  background-color: #359c6d;
 }
 </style>
