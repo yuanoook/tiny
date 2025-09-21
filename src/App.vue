@@ -15,9 +15,52 @@
         <div class="corner-cell">
           出发地/目的地
         </div>
+        <!-- 新牌堆列 -->
         <div 
           class="col-header" 
-          v-for="zone in allZones" 
+          v-for="zone in [baseZones.find(z => z.id === 'deck')]" 
+          :key="`col-${zone.id}`"
+          @dragover.prevent="handleDragOver"
+          @drop="handleDropToHeader(zone.id)"
+        >
+          {{ zone.name }}
+          <!-- 显示在列标题区域的卡牌 -->
+          <div 
+            class="card-dot header-card" 
+            v-for="card in getCardsInColumnHeader(zone.id)" 
+            :key="`col-header-${card.id}`"
+            :class="[card.color, { 'dragging': isDragging(card) }]"
+            draggable="true"
+            @dragstart="handleDragStart(card, $event)"
+            @dragend="handleDragEnd"
+          >
+          </div>
+        </div>
+        <!-- 玩家区域列 -->
+        <div 
+          class="col-header" 
+          v-for="player in players" 
+          :key="`col-${player.id}`"
+          @dragover.prevent="handleDragOver"
+          @drop="handleDropToHeader(player.id)"
+        >
+          {{ player.name }}
+          <!-- 显示在列标题区域的卡牌 -->
+          <div 
+            class="card-dot header-card" 
+            v-for="card in getCardsInColumnHeader(player.id)" 
+            :key="`col-header-${card.id}`"
+            :class="[card.color, { 'dragging': isDragging(card) }]"
+            draggable="true"
+            @dragstart="handleDragStart(card, $event)"
+            @dragend="handleDragEnd"
+          >
+          </div>
+        </div>
+        <!-- 弃牌堆列 -->
+        <div 
+          class="col-header" 
+          v-for="zone in [baseZones.find(z => z.id === 'discard')]" 
           :key="`col-${zone.id}`"
           @dragover.prevent="handleDragOver"
           @drop="handleDropToHeader(zone.id)"
@@ -37,18 +80,18 @@
         </div>
       </div>
       
-      <!-- 表格行 -->
-      <div class="table-row" v-for="rowZone in allZones" :key="`row-${rowZone.id}`">
+      <!-- 新牌堆行 -->
+      <div class="table-row" v-for="zone in [baseZones.find(z => z.id === 'deck')]" :key="`row-${zone.id}`">
         <div 
           class="row-header" 
           @dragover.prevent="handleDragOver"
-          @drop="handleDropToHeader(rowZone.id)"
+          @drop="handleDropToHeader(zone.id)"
         >
-          {{ rowZone.name }}
+          {{ zone.name }}
           <!-- 显示在行标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
-            v-for="card in getCardsInRowHeader(rowZone.id)" 
+            v-for="card in getCardsInRowHeader(zone.id)" 
             :key="`row-header-${card.id}`"
             :class="[card.color, { 'dragging': isDragging(card) }]"
             draggable="true"
@@ -57,18 +100,105 @@
           >
           </div>
         </div>
+        <!-- 新牌堆到各区域的单元格 -->
         <div 
           class="table-cell" 
-          v-for="colZone in allZones" 
-          :key="`${rowZone.id}-${colZone.id}`"
-          :class="{ 'center-zone': isCenterZone(rowZone.id, colZone.id) }"
+          v-for="colZone in [baseZones.find(z => z.id === 'deck'), ...players, baseZones.find(z => z.id === 'discard')]" 
+          :key="`${zone.id}-${colZone.id}`"
+          :class="{ 'center-zone': isCenterZone(zone.id, colZone.id) }"
           @dragover.prevent="handleDragOver"
-          @drop="handleDrop(rowZone.id, colZone.id)"
+          @drop="handleDrop(zone.id, colZone.id)"
         >
           <!-- 显示该区域的卡牌 -->
           <div 
             class="card-dot" 
-            v-for="card in getCardsInCell(rowZone.id, colZone.id)" 
+            v-for="card in getCardsInCell(zone.id, colZone.id)" 
+            :key="`${card.id}`"
+            :class="[card.color, { 'dragging': isDragging(card) }]"
+            draggable="true"
+            @dragstart="handleDragStart(card, $event)"
+            @dragend="handleDragEnd"
+          >
+          </div>
+        </div>
+      </div>
+      
+      <!-- 玩家行 -->
+      <div class="table-row" v-for="player in players" :key="`row-${player.id}`">
+        <div 
+          class="row-header" 
+          @dragover.prevent="handleDragOver"
+          @drop="handleDropToHeader(player.id)"
+        >
+          {{ player.name }}
+          <!-- 显示在行标题区域的卡牌 -->
+          <div 
+            class="card-dot header-card" 
+            v-for="card in getCardsInRowHeader(player.id)" 
+            :key="`row-header-${card.id}`"
+            :class="[card.color, { 'dragging': isDragging(card) }]"
+            draggable="true"
+            @dragstart="handleDragStart(card, $event)"
+            @dragend="handleDragEnd"
+          >
+          </div>
+        </div>
+        <!-- 玩家到各区域的单元格 -->
+        <div 
+          class="table-cell" 
+          v-for="colZone in [baseZones.find(z => z.id === 'deck'), ...players, baseZones.find(z => z.id === 'discard')]" 
+          :key="`${player.id}-${colZone.id}`"
+          :class="{ 'center-zone': isCenterZone(player.id, colZone.id) }"
+          @dragover.prevent="handleDragOver"
+          @drop="handleDrop(player.id, colZone.id)"
+        >
+          <!-- 显示该区域的卡牌 -->
+          <div 
+            class="card-dot" 
+            v-for="card in getCardsInCell(player.id, colZone.id)" 
+            :key="`${card.id}`"
+            :class="[card.color, { 'dragging': isDragging(card) }]"
+            draggable="true"
+            @dragstart="handleDragStart(card, $event)"
+            @dragend="handleDragEnd"
+          >
+          </div>
+        </div>
+      </div>
+      
+      <!-- 弃牌堆行 -->
+      <div class="table-row" v-for="zone in [baseZones.find(z => z.id === 'discard')]" :key="`row-${zone.id}`">
+        <div 
+          class="row-header" 
+          @dragover.prevent="handleDragOver"
+          @drop="handleDropToHeader(zone.id)"
+        >
+          {{ zone.name }}
+          <!-- 显示在行标题区域的卡牌 -->
+          <div 
+            class="card-dot header-card" 
+            v-for="card in getCardsInRowHeader(zone.id)" 
+            :key="`row-header-${card.id}`"
+            :class="[card.color, { 'dragging': isDragging(card) }]"
+            draggable="true"
+            @dragstart="handleDragStart(card, $event)"
+            @dragend="handleDragEnd"
+          >
+          </div>
+        </div>
+        <!-- 弃牌堆到各区域的单元格 -->
+        <div 
+          class="table-cell" 
+          v-for="colZone in [baseZones.find(z => z.id === 'deck'), ...players, baseZones.find(z => z.id === 'discard')]" 
+          :key="`${zone.id}-${colZone.id}`"
+          :class="{ 'center-zone': isCenterZone(zone.id, colZone.id) }"
+          @dragover.prevent="handleDragOver"
+          @drop="handleDrop(zone.id, colZone.id)"
+        >
+          <!-- 显示该区域的卡牌 -->
+          <div 
+            class="card-dot" 
+            v-for="card in getCardsInCell(zone.id, colZone.id)" 
             :key="`${card.id}`"
             :class="[card.color, { 'dragging': isDragging(card) }]"
             draggable="true"
@@ -94,7 +224,7 @@
       <h3>当前玩家:</h3>
       <div class="player" v-for="player in players" :key="player.id">
         {{ player.name }}
-        <button @click="removePlayer(player.id)">移除</button>
+        <button v-if="players.length > 2" @click="removePlayer(player.id)">移除</button>
       </div>
     </div>
   </div>
@@ -155,12 +285,21 @@ export default {
       };
     },
     
-    // 所有区域（基础区域+玩家区域）
+    // 所有区域（新牌堆 + 玩家区域 + 弃牌堆）
     allZones() {
+      // 先获取新牌堆
+      const deckZone = this.baseZones.find(zone => zone.id === 'deck');
+      // 获取弃牌堆
+      const discardZone = this.baseZones.find(zone => zone.id === 'discard');
+      // 获取玩家区域
+      const playerZones = this.players.map(player => ({ id: player.id, name: player.name }));
+      
+      // 返回排序后的区域：新牌堆 + 玩家区域 + 弃牌堆
       return [
-        ...this.baseZones,
-        ...this.players.map(player => ({ id: player.id, name: player.name }))
-      ];
+        deckZone,
+        ...playerZones,
+        discardZone
+      ].filter(zone => zone !== undefined);
     }
   },
   methods: {
