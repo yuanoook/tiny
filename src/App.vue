@@ -183,10 +183,10 @@
                 'dragging': isDragging(card), 
                 'disguised': card.isDisguised, 
                 'hidden': card.visibility === 'hidden',
-                'deck-card': (zone.id === 'deck' || zone.id === 'discard')
+                'deck-card': (zone.id === 'deck' || zone.id === 'discard') && (colZone.id === 'deck' || colZone.id === 'discard')
               }
             ]"
-            :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
+            :style="(zone.id === 'deck' || zone.id === 'discard') && (colZone.id === 'deck' || colZone.id === 'discard') ? { 
               position: 'absolute',
               left: `${5 + (index * 15) % 69}px`,
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
@@ -306,10 +306,10 @@
                 'dragging': isDragging(card), 
                 'disguised': card.isDisguised, 
                 'hidden': card.visibility === 'hidden',
-                'deck-card': (zone.id === 'deck' || zone.id === 'discard')
+                'deck-card': (zone.id === 'deck' || zone.id === 'discard') && (colZone.id === 'deck' || colZone.id === 'discard')
               }
             ]"
-            :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
+            :style="(zone.id === 'deck' || zone.id === 'discard') && (colZone.id === 'deck' || colZone.id === 'discard') ? { 
               position: 'absolute',
               left: `${5 + (index * 15) % 69}px`,
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
