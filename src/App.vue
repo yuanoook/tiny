@@ -51,8 +51,8 @@
             ]"
             :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
               position: 'absolute',
-              left: `${5 + (index * 15) % 64}px`,
-              top: `${5 + Math.floor(index / 5) * 15}px`,
+              left: `${5 + (index * 15) % 69}px`,
+              top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
             draggable="true"
@@ -112,8 +112,8 @@
             ]"
             :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
               position: 'absolute',
-              left: `${5 + (index * 15) % 64}px`,
-              top: `${5 + Math.floor(index / 5) * 15}px`,
+              left: `${5 + (index * 15) % 69}px`,
+              top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
             draggable="true"
@@ -151,8 +151,8 @@
             ]"
             :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
               position: 'absolute',
-              left: `${5 + (index * 15) % 64}px`,
-              top: `${5 + Math.floor(index / 5) * 15}px`,
+              left: `${5 + (index * 15) % 69}px`,
+              top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
             draggable="true"
@@ -188,8 +188,8 @@
             ]"
             :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
               position: 'absolute',
-              left: `${5 + (index * 15) % 60}px`,
-              top: `${5 + Math.floor(index / 4) * 15}px`,
+              left: `${5 + (index * 15) % 69}px`,
+              top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
             draggable="true"
@@ -274,8 +274,8 @@
             ]"
             :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
               position: 'absolute',
-              left: `${5 + (index * 15) % 64}px`,
-              top: `${5 + Math.floor(index / 5) * 15}px`,
+              left: `${5 + (index * 15) % 69}px`,
+              top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
             draggable="true"
@@ -311,8 +311,8 @@
             ]"
             :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
               position: 'absolute',
-              left: `${5 + (index * 15) % 60}px`,
-              top: `${5 + Math.floor(index / 4) * 15}px`,
+              left: `${5 + (index * 15) % 69}px`,
+              top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
             draggable="true"
