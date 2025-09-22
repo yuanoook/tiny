@@ -34,7 +34,7 @@
           @dragover.prevent="handleDragOver"
           @drop="handleDropToHeader(zone.id)"
         >
-          <span>{{ zone.name }}</span>
+          <span class="header-text">{{ zone.name }}</span>
           <!-- 显示在列标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
@@ -57,7 +57,7 @@
           @dragover.prevent="handleDragOver"
           @drop="handleDropToHeader(player.id)"
         >
-          <span>{{ player.name }}</span>
+          <span class="header-text">{{ player.name }}</span>
           <!-- 显示在列标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
@@ -80,7 +80,7 @@
           @dragover.prevent="handleDragOver"
           @drop="handleDropToHeader(zone.id)"
         >
-          <span>{{ zone.name }}</span>
+          <span class="header-text">{{ zone.name }}</span>
           <!-- 显示在列标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
@@ -104,7 +104,7 @@
           @dragover.prevent="handleDragOver"
           @drop="handleDropToHeader(zone.id)"
         >
-          <span>{{ zone.name }}</span>
+          <span class="header-text">{{ zone.name }}</span>
           <!-- 显示在行标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
@@ -151,7 +151,7 @@
           @dragover.prevent="handleDragOver"
           @drop="handleDropToHeader(player.id)"
         >
-          <span>{{ player.name }}</span>
+          <span class="header-text">{{ player.name }}</span>
           <!-- 显示在行标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
@@ -198,7 +198,7 @@
           @dragover.prevent="handleDragOver"
           @drop="handleDropToHeader(zone.id)"
         >
-          <span>{{ zone.name }}</span>
+          <span class="header-text">{{ zone.name }}</span>
           <!-- 显示在行标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
@@ -649,7 +649,7 @@ export default {
   text-align: left;
 }
 
-.col-header span {
+.col-header .header-text {
   position: absolute;
   top: 0px;
   left: 1px;
@@ -673,7 +673,7 @@ export default {
   text-align: left;
 }
 
-.row-header span {
+.row-header .header-text {
   position: absolute;
   top: 0px;
   left: 1px;
