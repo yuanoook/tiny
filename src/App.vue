@@ -348,9 +348,9 @@
                @click="toggleCardVisibility">
             {{ currentCard ? currentCard.id : '' }}
           </div>
-          <div class="option-circle red" @click="setDisguiseColor('red')">1</div>
-          <div class="option-circle yellow" @click="setDisguiseColor('yellow')">2</div>
-          <div class="option-circle green" @click="setDisguiseColor('green')">3</div>
+          <div class="option-circle red" @click="setDisguiseColor('red')"></div>
+          <div class="option-circle yellow" @click="setDisguiseColor('yellow')"></div>
+          <div class="option-circle green" @click="setDisguiseColor('green')"></div>
         </div>
       </div>
     </div>
