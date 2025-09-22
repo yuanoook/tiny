@@ -2,10 +2,22 @@
   <div id="app">
     <h1>卡牌游戏 - 表格布局</h1>
     
-    <!-- 游戏控制按钮 -->
-    <div class="game-controls">
-      <button @click="addPlayer">添加玩家</button>
-      <button @click="resetGame">重置游戏</button>
+    <!-- 顶部控制区域 -->
+    <div class="top-controls">
+      <!-- 游戏控制按钮 -->
+      <div class="game-controls">
+        <button @click="addPlayer">添加玩家</button>
+        <button @click="resetGame">重置游戏</button>
+      </div>
+      
+      <!-- 玩家列表 -->
+      <div class="players-list">
+        <h3>当前玩家:</h3>
+        <div class="player" v-for="player in players" :key="player.id">
+          {{ player.name }}
+          <button v-if="players.length > 2" @click="removePlayer(player.id)">移除</button>
+        </div>
+      </div>
     </div>
     
     <!-- 表格布局的牌堆区域 -->
@@ -228,15 +240,6 @@
       ]"
       :style="draggingCardStyle"
     >
-    </div>
-    
-    <!-- 玩家列表 -->
-    <div class="players-list">
-      <h3>当前玩家:</h3>
-      <div class="player" v-for="player in players" :key="player.id">
-        {{ player.name }}
-        <button v-if="players.length > 2" @click="removePlayer(player.id)">移除</button>
-      </div>
     </div>
     
     <!-- 卡牌操作弹窗 -->
@@ -576,6 +579,14 @@ export default {
   background-color: #359c6d;
 }
 
+/* 顶部控制区域 */
+.top-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
 .game-table {
   display: inline-block;
   border: 2px solid white;
@@ -745,25 +756,34 @@ export default {
 }
 
 .players-list {
-  margin-top: 20px;
+  margin-top: 0;
+  flex-grow: 1;
+  margin-left: 20px;
+}
+
+.players-list h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
 }
 
 .players-list .player {
   display: inline-block;
-  margin: 10px;
-  padding: 10px;
+  margin: 5px 10px 5px 0;
+  padding: 8px 12px;
   border: 1px solid white;
   border-radius: 5px;
+  background-color: #f5f5f5;
 }
 
 .players-list .player button {
   margin-left: 10px;
-  padding: 5px 10px;
+  padding: 3px 8px;
   border: none;
   border-radius: 3px;
   background-color: #f44336;
   color: white;
   cursor: pointer;
+  font-size: 12px;
 }
 
 /* 弹窗样式 */
