@@ -36,10 +36,25 @@
           <span class="header-text">{{ zone.name }}</span>
           <!-- 显示在列标题区域的卡牌 -->
           <div 
-            class="card-dot header-card" 
             v-for="(card, index) in getCardsInColumnHeader(zone.id)" 
             :key="`col-header-${card.id}`"
-            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
+            :class="[
+              'card-dot', 
+              'header-card',
+              card.isDisguised ? card.disguiseColor : card.color, 
+              { 
+                'dragging': isDragging(card), 
+                'disguised': card.isDisguised, 
+                'hidden': card.visibility === 'hidden',
+                'deck-header-card': (zone.id === 'deck' || zone.id === 'discard')
+              }
+            ]"
+            :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
+              position: 'absolute',
+              left: `${5 + (index * 15) % 64}px`,
+              top: `${5 + Math.floor(index / 5) * 15}px`,
+              zIndex: index
+            } : {}"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
@@ -82,10 +97,25 @@
           <span class="header-text">{{ zone.name }}</span>
           <!-- 显示在列标题区域的卡牌 -->
           <div 
-            class="card-dot header-card" 
             v-for="(card, index) in getCardsInColumnHeader(zone.id)" 
             :key="`col-header-${card.id}`"
-            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
+            :class="[
+              'card-dot', 
+              'header-card',
+              card.isDisguised ? card.disguiseColor : card.color, 
+              { 
+                'dragging': isDragging(card), 
+                'disguised': card.isDisguised, 
+                'hidden': card.visibility === 'hidden',
+                'deck-header-card': (zone.id === 'deck' || zone.id === 'discard')
+              }
+            ]"
+            :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
+              position: 'absolute',
+              left: `${5 + (index * 15) % 64}px`,
+              top: `${5 + Math.floor(index / 5) * 15}px`,
+              zIndex: index
+            } : {}"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
@@ -106,10 +136,25 @@
           <span class="header-text">{{ zone.name }}</span>
           <!-- 显示在行标题区域的卡牌 -->
           <div 
-            class="card-dot header-card" 
             v-for="(card, index) in getCardsInRowHeader(zone.id)" 
             :key="`row-header-${card.id}`"
-            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
+            :class="[
+              'card-dot', 
+              'header-card',
+              card.isDisguised ? card.disguiseColor : card.color, 
+              { 
+                'dragging': isDragging(card), 
+                'disguised': card.isDisguised, 
+                'hidden': card.visibility === 'hidden',
+                'deck-header-card': (zone.id === 'deck' || zone.id === 'discard')
+              }
+            ]"
+            :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
+              position: 'absolute',
+              left: `${5 + (index * 15) % 64}px`,
+              top: `${5 + Math.floor(index / 5) * 15}px`,
+              zIndex: index
+            } : {}"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
@@ -123,16 +168,30 @@
           class="table-cell" 
           v-for="colZone in [baseZones.find(z => z.id === 'deck'), ...players, baseZones.find(z => z.id === 'discard')]" 
           :key="`${zone.id}-${colZone.id}`"
-          :class="{ 'center-zone': isCenterZone(zone.id, colZone.id) }"
+          :class="[`cell-${zone.id}-${colZone.id}`, { 'center-zone': isCenterZone(zone.id, colZone.id), 'deck-cell': zone.id === 'deck', 'discard-cell': zone.id === 'discard' }]"
           @dragover.prevent="handleDragOver"
           @drop="handleDrop(zone.id, colZone.id)"
         >
           <!-- 显示该区域的卡牌 -->
           <div 
-            class="card-dot" 
             v-for="(card, index) in getCardsInCell(zone.id, colZone.id)" 
             :key="`${card.id}`"
-            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
+            :class="[
+              'card-dot', 
+              card.isDisguised ? card.disguiseColor : card.color, 
+              { 
+                'dragging': isDragging(card), 
+                'disguised': card.isDisguised, 
+                'hidden': card.visibility === 'hidden',
+                'deck-card': (zone.id === 'deck' || zone.id === 'discard')
+              }
+            ]"
+            :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
+              position: 'absolute',
+              left: `${5 + (index * 15) % 60}px`,
+              top: `${5 + Math.floor(index / 4) * 15}px`,
+              zIndex: index
+            } : {}"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
@@ -170,7 +229,7 @@
           class="table-cell" 
           v-for="colZone in [baseZones.find(z => z.id === 'deck'), ...players, baseZones.find(z => z.id === 'discard')]" 
           :key="`${player.id}-${colZone.id}`"
-          :class="{ 'center-zone': isCenterZone(player.id, colZone.id) }"
+          :class="[`cell-${player.id}-${colZone.id}`, { 'center-zone': isCenterZone(player.id, colZone.id) }]"
           @dragover.prevent="handleDragOver"
           @drop="handleDrop(player.id, colZone.id)"
         >
@@ -200,10 +259,25 @@
           <span class="header-text">{{ zone.name }}</span>
           <!-- 显示在行标题区域的卡牌 -->
           <div 
-            class="card-dot header-card" 
             v-for="(card, index) in getCardsInRowHeader(zone.id)" 
             :key="`row-header-${card.id}`"
-            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
+            :class="[
+              'card-dot', 
+              'header-card',
+              card.isDisguised ? card.disguiseColor : card.color, 
+              { 
+                'dragging': isDragging(card), 
+                'disguised': card.isDisguised, 
+                'hidden': card.visibility === 'hidden',
+                'deck-header-card': (zone.id === 'deck' || zone.id === 'discard')
+              }
+            ]"
+            :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
+              position: 'absolute',
+              left: `${5 + (index * 15) % 64}px`,
+              top: `${5 + Math.floor(index / 5) * 15}px`,
+              zIndex: index
+            } : {}"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
@@ -217,16 +291,30 @@
           class="table-cell" 
           v-for="colZone in [baseZones.find(z => z.id === 'deck'), ...players, baseZones.find(z => z.id === 'discard')]" 
           :key="`${zone.id}-${colZone.id}`"
-          :class="{ 'center-zone': isCenterZone(zone.id, colZone.id) }"
+          :class="[`cell-${zone.id}-${colZone.id}`, { 'center-zone': isCenterZone(zone.id, colZone.id), 'deck-cell': zone.id === 'deck', 'discard-cell': zone.id === 'discard' }]"
           @dragover.prevent="handleDragOver"
           @drop="handleDrop(zone.id, colZone.id)"
         >
           <!-- 显示该区域的卡牌 -->
           <div 
-            class="card-dot" 
             v-for="(card, index) in getCardsInCell(zone.id, colZone.id)" 
             :key="`${card.id}`"
-            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
+            :class="[
+              'card-dot', 
+              card.isDisguised ? card.disguiseColor : card.color, 
+              { 
+                'dragging': isDragging(card), 
+                'disguised': card.isDisguised, 
+                'hidden': card.visibility === 'hidden',
+                'deck-card': (zone.id === 'deck' || zone.id === 'discard')
+              }
+            ]"
+            :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
+              position: 'absolute',
+              left: `${5 + (index * 15) % 60}px`,
+              top: `${5 + Math.floor(index / 4) * 15}px`,
+              zIndex: index
+            } : {}"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
@@ -286,16 +374,7 @@ export default {
         ],
         
         // 卡牌数据 (新的设计：owner表示拥有者，to表示目标区域)
-        cards: [
-          { id: 1, globalId: 1, color: 'red', owner: 'deck', visibility: 'hidden' },
-          { id: 2, globalId: 2, color: 'yellow', owner: 'deck', visibility: 'hidden' },
-          { id: 3, globalId: 3, color: 'green', owner: 'deck', visibility: 'hidden' },
-          { id: 4, globalId: 4, color: 'red', owner: 'player1', visibility: 'hidden' },
-          { id: 5, globalId: 5, color: 'yellow', owner: 'player1', visibility: 'hidden' },
-          { id: 6, globalId: 6, color: 'green', owner: 'player2', visibility: 'hidden' },
-          { id: 7, globalId: 7, color: 'red', owner: 'player1', to: 'player2', visibility: 'hidden' },
-          { id: 8, globalId: 8, color: 'yellow', owner: 'player2', to: 'player1', visibility: 'hidden' }
-        ],
+        cards: this.generateInitialCards(),
         
         // 拖拽状态
         draggingCard: null,
@@ -536,33 +615,36 @@ export default {
     
     // 重置游戏
     resetGame() {
-      // 重置卡牌位置
-      this.cards.forEach((card, index) => {
-        delete card.to; // 清除目标区域
-        
-        // 确保每张卡牌都有globalId
-        if (!card.globalId) {
-          card.globalId = card.id;
-        }
-        
-        if (index < 3) {
-          card.owner = 'deck';
-        } else if (index < 5) {
-          card.owner = 'player1';
-        } else if (index < 6) {
-          card.owner = 'player2';
-        } else {
-          // 重置一些卡牌到中间区域作为示例
-          if (index === 6) {
-            card.owner = 'player1';
-            card.to = 'player2';
-          } else if (index === 7) {
-            card.owner = 'player2';
-            card.to = 'player1';
-          }
-        }
-      });
+      // 重新生成60张随机分布的卡牌
+      this.cards = this.generateInitialCards();
     },
+    // 生成初始卡牌数据
+    generateInitialCards() {
+      const colors = ['red', 'yellow', 'green'];
+      const cards = [];
+      
+      // 生成60张卡牌，每种颜色各20张
+      for (let i = 0; i < 60; i++) {
+        const colorIndex = Math.floor(i / 20); // 每20张为一种颜色
+        const color = colors[colorIndex];
+        cards.push({
+          id: i + 1,
+          globalId: i + 1,
+          color: color,
+          owner: 'deck', // 所有卡牌初始时都在新牌堆
+          visibility: 'hidden'
+        });
+      }
+      
+      // Fisher-Yates 洗牌算法，将卡牌随机打散
+      for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+      }
+      
+      return cards;
+    },
+    
     // 获取卡牌在cards数组中的索引
     getCardIndex(card) {
       return this.cards.findIndex(c => c.id === card.id);
@@ -641,10 +723,8 @@ export default {
   width: 84px;
   min-height: 80px;
   border: 1px solid white;
-  font-weight: bold;
   padding: 10px;
   position: relative;
-  background-color: #f5f5f5;
   text-align: left;
 }
 
@@ -662,8 +742,6 @@ export default {
 }
 
 .row-header {
-  background-color: #e0e0e0;
-  font-weight: bold;
   width: 84px;
   min-height: 80px;
   border: 1px solid white;
@@ -726,6 +804,18 @@ export default {
   cursor: pointer;
   display: inline-block;
   position: relative;
+}
+
+/* 新牌堆和弃牌堆区域的卡牌样式 */
+.card-dot.deck-card {
+  position: absolute !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* 新牌堆和弃牌堆区域的标题卡牌样式 */
+.card-dot.deck-header-card {
+  position: absolute !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .card-dot.red {
