@@ -578,7 +578,7 @@ export default {
 
 .game-table {
   display: inline-block;
-  border: 2px solid #ddd;
+  border: 2px solid white;
   border-radius: 10px;
   overflow: hidden;
   margin: 20px 0;
@@ -590,9 +590,9 @@ export default {
 
 .corner-cell {
   background-color: #e0e0e0;
-  width: 120px;
+  width: 90px;
   min-height: 60px;
-  border: 1px solid #ddd;
+  border: 1px solid white;
   font-weight: bold;
   padding: 10px;
   position: relative;
@@ -601,17 +601,17 @@ export default {
 .corner-cell::after {
   content: "出发地/目的地";
   position: absolute;
-  top: 5px;
-  left: 5px;
+  top: 0px;
+  left: 1px;
   font-size: 12px;
   color: #666;
   z-index: 1;
 }
 
 .col-header {
-  width: 120px;
+  width: 90px;
   min-height: 80px;
-  border: 1px solid #ddd;
+  border: 1px solid white;
   font-weight: bold;
   padding: 10px;
   position: relative;
@@ -622,7 +622,7 @@ export default {
 .col-header span {
   position: absolute;
   top: 0px;
-  left: 0px;
+  left: 1px;
   font-size: 12px;
   color: #666;
   z-index: 1;
@@ -635,9 +635,9 @@ export default {
 .row-header {
   background-color: #e0e0e0;
   font-weight: bold;
-  width: 120px;
+  width: 90px;
   min-height: 80px;
-  border: 1px solid #ddd;
+  border: 1px solid white;
   padding: 10px;
   position: relative;
   text-align: left;
@@ -646,16 +646,16 @@ export default {
 .row-header span {
   position: absolute;
   top: 0px;
-  left: 0px;
+  left: 1px;
   font-size: 12px;
   color: #666;
   z-index: 1;
 }
 
 .table-cell {
-  width: 120px;
+  width: 90px;
   min-height: 80px;
-  border: 1px solid #ddd;
+  border: 1px solid white;
   padding: 10px;
   position: relative;
   text-align: left;
@@ -751,7 +751,7 @@ export default {
   display: inline-block;
   margin: 10px;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid white;
   border-radius: 5px;
 }
 
@@ -785,6 +785,7 @@ export default {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 300px;
+  border: 1px solid white;
 }
 
 .card-modal h3 {
@@ -803,7 +804,7 @@ export default {
   display: flex;
   align-items: center;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid white;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.2s;
