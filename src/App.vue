@@ -346,10 +346,11 @@
           <div class="option-circle" 
                :class="currentCard && currentCard.visibility === 'hidden' ? currentCard.color : 'hidden'"
                @click="toggleCardVisibility">
+            {{ currentCard ? currentCard.id : '' }}
           </div>
-          <div class="option-circle red" @click="setDisguiseColor('red')"></div>
-          <div class="option-circle yellow" @click="setDisguiseColor('yellow')"></div>
-          <div class="option-circle green" @click="setDisguiseColor('green')"></div>
+          <div class="option-circle red" @click="setDisguiseColor('red')">1</div>
+          <div class="option-circle yellow" @click="setDisguiseColor('yellow')">2</div>
+          <div class="option-circle green" @click="setDisguiseColor('green')">3</div>
         </div>
       </div>
     </div>
@@ -726,6 +727,7 @@ export default {
   padding: 10px;
   position: relative;
   text-align: left;
+  background-color: #f5f5f5;
 }
 
 .col-header .header-text {
@@ -748,6 +750,7 @@ export default {
   padding: 10px;
   position: relative;
   text-align: left;
+  background-color: #f5f5f5;
 }
 
 .row-header .header-text {
