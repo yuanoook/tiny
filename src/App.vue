@@ -8,14 +8,13 @@
       <div class="game-controls">
         <button @click="addPlayer">添加玩家</button>
         <button @click="resetGame">重置游戏</button>
-      </div>
-      
-      <!-- 玩家列表 -->
-      <div class="players-list">
-        <h3>当前玩家:</h3>
-        <div class="player" v-for="player in players" :key="player.id">
-          {{ player.name }}
-          <button v-if="players.length > 2" @click="removePlayer(player.id)">移除</button>
+        
+        <!-- 玩家列表 -->
+        <div class="players-list">
+          <div class="player" v-for="player in players" :key="player.id">
+            {{ player.name }}
+            <button v-if="players.length > 2" @click="removePlayer(player.id)">移除</button>
+          </div>
         </div>
       </div>
     </div>
@@ -789,19 +788,14 @@ export default {
 }
 
 .players-list {
-  margin-top: 0;
-  flex-grow: 1;
-  margin-left: 20px;
-}
-
-.players-list h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
+  display: inline-block;
+  margin: 0;
+  vertical-align: middle;
 }
 
 .players-list .player {
   display: inline-block;
-  margin: 5px 10px 5px 0;
+  margin: 0 10px 0 0;
   padding: 8px 12px;
   border: 1px solid white;
   border-radius: 5px;
