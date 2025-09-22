@@ -13,7 +13,6 @@
       <!-- 表头 -->
       <div class="table-header">
         <div class="corner-cell">
-          出发地/目的地
         </div>
         <!-- 新牌堆列 -->
         <div 
@@ -23,7 +22,7 @@
           @dragover.prevent="handleDragOver"
           @drop="handleDropToHeader(zone.id)"
         >
-          {{ zone.name }}
+          <span>{{ zone.name }}</span>
           <!-- 显示在列标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
@@ -45,7 +44,7 @@
           @dragover.prevent="handleDragOver"
           @drop="handleDropToHeader(player.id)"
         >
-          {{ player.name }}
+          <span>{{ player.name }}</span>
           <!-- 显示在列标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
@@ -67,7 +66,7 @@
           @dragover.prevent="handleDragOver"
           @drop="handleDropToHeader(zone.id)"
         >
-          {{ zone.name }}
+          <span>{{ zone.name }}</span>
           <!-- 显示在列标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
@@ -90,7 +89,7 @@
           @dragover.prevent="handleDragOver"
           @drop="handleDropToHeader(zone.id)"
         >
-          {{ zone.name }}
+          <span>{{ zone.name }}</span>
           <!-- 显示在行标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
@@ -135,7 +134,7 @@
           @dragover.prevent="handleDragOver"
           @drop="handleDropToHeader(player.id)"
         >
-          {{ player.name }}
+          <span>{{ player.name }}</span>
           <!-- 显示在行标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
@@ -180,7 +179,7 @@
           @dragover.prevent="handleDragOver"
           @drop="handleDropToHeader(zone.id)"
         >
-          {{ zone.name }}
+          <span>{{ zone.name }}</span>
           <!-- 显示在行标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
@@ -593,28 +592,40 @@ export default {
   background-color: #e0e0e0;
   width: 120px;
   min-height: 60px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
   border: 1px solid #ddd;
   font-weight: bold;
   padding: 10px;
   position: relative;
 }
 
+.corner-cell::after {
+  content: "出发地/目的地";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 12px;
+  color: #666;
+  z-index: 1;
+}
+
 .col-header {
   width: 120px;
-  min-height: 60px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
+  min-height: 80px;
   border: 1px solid #ddd;
   font-weight: bold;
   padding: 10px;
   position: relative;
   background-color: #f5f5f5;
+  text-align: left;
+}
+
+.col-header span {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 12px;
+  color: #666;
+  z-index: 1;
 }
 
 .table-row {
@@ -626,13 +637,19 @@ export default {
   font-weight: bold;
   width: 120px;
   min-height: 80px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
   border: 1px solid #ddd;
   padding: 10px;
   position: relative;
+  text-align: left;
+}
+
+.row-header span {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 12px;
+  color: #666;
+  z-index: 1;
 }
 
 .table-cell {
@@ -641,6 +658,7 @@ export default {
   border: 1px solid #ddd;
   padding: 10px;
   position: relative;
+  text-align: left;
 }
 
 /* 中心区域（工作区/待转区）的特殊背景色 */
@@ -653,6 +671,7 @@ export default {
   width: 15px;
   height: 15px;
   margin: 2px;
+  display: inline-block;
 }
 
 /* 卡牌小圆点样式 */
@@ -660,7 +679,7 @@ export default {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  margin: 5px;
+  margin: 2px;
   cursor: pointer;
   display: inline-block;
 }
