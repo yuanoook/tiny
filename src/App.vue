@@ -590,7 +590,7 @@ export default {
 
 .corner-cell {
   background-color: #e0e0e0;
-  width: 90px;
+  width: 84px;
   min-height: 60px;
   border: 1px solid white;
   font-weight: bold;
@@ -609,7 +609,7 @@ export default {
 }
 
 .col-header {
-  width: 90px;
+  width: 84px;
   min-height: 80px;
   border: 1px solid white;
   font-weight: bold;
@@ -635,7 +635,7 @@ export default {
 .row-header {
   background-color: #e0e0e0;
   font-weight: bold;
-  width: 90px;
+  width: 84px;
   min-height: 80px;
   border: 1px solid white;
   padding: 10px;
@@ -653,7 +653,7 @@ export default {
 }
 
 .table-cell {
-  width: 90px;
+  width: 84px;
   min-height: 80px;
   border: 1px solid white;
   padding: 10px;
