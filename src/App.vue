@@ -38,7 +38,7 @@
           <!-- 显示在列标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
-            v-for="card in getCardsInColumnHeader(zone.id)" 
+            v-for="(card, index) in getCardsInColumnHeader(zone.id)" 
             :key="`col-header-${card.id}`"
             :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
@@ -46,6 +46,7 @@
             @dragend="handleDragEnd"
             @dblclick="toggleCardDisguise(card)"
           >
+            <span class="card-id">{{ card.globalId }}</span>
           </div>
         </div>
         <!-- 玩家区域列 -->
@@ -60,7 +61,7 @@
           <!-- 显示在列标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
-            v-for="card in getCardsInColumnHeader(player.id)" 
+            v-for="(card, index) in getCardsInColumnHeader(player.id)" 
             :key="`col-header-${card.id}`"
             :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
@@ -68,6 +69,7 @@
             @dragend="handleDragEnd"
             @dblclick="toggleCardDisguise(card)"
           >
+            <span class="card-id">{{ card.globalId }}</span>
           </div>
         </div>
         <!-- 弃牌堆列 -->
@@ -82,7 +84,7 @@
           <!-- 显示在列标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
-            v-for="card in getCardsInColumnHeader(zone.id)" 
+            v-for="(card, index) in getCardsInColumnHeader(zone.id)" 
             :key="`col-header-${card.id}`"
             :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
@@ -90,6 +92,7 @@
             @dragend="handleDragEnd"
             @dblclick="toggleCardDisguise(card)"
           >
+            <span class="card-id">{{ card.globalId }}</span>
           </div>
         </div>
       </div>
@@ -105,7 +108,7 @@
           <!-- 显示在行标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
-            v-for="card in getCardsInRowHeader(zone.id)" 
+            v-for="(card, index) in getCardsInRowHeader(zone.id)" 
             :key="`row-header-${card.id}`"
             :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
@@ -113,6 +116,7 @@
             @dragend="handleDragEnd"
             @dblclick="toggleCardDisguise(card)"
           >
+            <span class="card-id">{{ card.globalId }}</span>
           </div>
         </div>
         <!-- 新牌堆到各区域的单元格 -->
@@ -127,7 +131,7 @@
           <!-- 显示该区域的卡牌 -->
           <div 
             class="card-dot" 
-            v-for="card in getCardsInCell(zone.id, colZone.id)" 
+            v-for="(card, index) in getCardsInCell(zone.id, colZone.id)" 
             :key="`${card.id}`"
             :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
@@ -135,6 +139,7 @@
             @dragend="handleDragEnd"
             @dblclick="toggleCardDisguise(card)"
           >
+            <span class="card-id">{{ card.globalId }}</span>
           </div>
         </div>
       </div>
@@ -150,7 +155,7 @@
           <!-- 显示在行标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
-            v-for="card in getCardsInRowHeader(player.id)" 
+            v-for="(card, index) in getCardsInRowHeader(player.id)" 
             :key="`row-header-${card.id}`"
             :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
@@ -158,6 +163,7 @@
             @dragend="handleDragEnd"
             @dblclick="toggleCardDisguise(card)"
           >
+            <span class="card-id">{{ card.globalId }}</span>
           </div>
         </div>
         <!-- 玩家到各区域的单元格 -->
@@ -172,7 +178,7 @@
           <!-- 显示该区域的卡牌 -->
           <div 
             class="card-dot" 
-            v-for="card in getCardsInCell(player.id, colZone.id)" 
+            v-for="(card, index) in getCardsInCell(player.id, colZone.id)" 
             :key="`${card.id}`"
             :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
@@ -180,6 +186,7 @@
             @dragend="handleDragEnd"
             @dblclick="toggleCardDisguise(card)"
           >
+            <span class="card-id">{{ card.globalId }}</span>
           </div>
         </div>
       </div>
@@ -195,7 +202,7 @@
           <!-- 显示在行标题区域的卡牌 -->
           <div 
             class="card-dot header-card" 
-            v-for="card in getCardsInRowHeader(zone.id)" 
+            v-for="(card, index) in getCardsInRowHeader(zone.id)" 
             :key="`row-header-${card.id}`"
             :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
@@ -203,6 +210,7 @@
             @dragend="handleDragEnd"
             @dblclick="toggleCardDisguise(card)"
           >
+            <span class="card-id">{{ card.globalId }}</span>
           </div>
         </div>
         <!-- 弃牌堆到各区域的单元格 -->
@@ -217,7 +225,7 @@
           <!-- 显示该区域的卡牌 -->
           <div 
             class="card-dot" 
-            v-for="card in getCardsInCell(zone.id, colZone.id)" 
+            v-for="(card, index) in getCardsInCell(zone.id, colZone.id)" 
             :key="`${card.id}`"
             :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
             draggable="true"
@@ -225,6 +233,7 @@
             @dragend="handleDragEnd"
             @dblclick="toggleCardDisguise(card)"
           >
+            <span class="card-id">{{ card.globalId }}</span>
           </div>
         </div>
       </div>
@@ -240,6 +249,7 @@
       ]"
       :style="draggingCardStyle"
     >
+      <span class="card-id">{{ draggingCard.globalId }}</span>
     </div>
     
     <!-- 卡牌操作弹窗 -->
@@ -278,14 +288,14 @@ export default {
         
         // 卡牌数据 (新的设计：owner表示拥有者，to表示目标区域)
         cards: [
-          { id: 1, color: 'red', owner: 'deck', visibility: 'hidden' },
-          { id: 2, color: 'yellow', owner: 'deck', visibility: 'hidden' },
-          { id: 3, color: 'green', owner: 'deck', visibility: 'hidden' },
-          { id: 4, color: 'red', owner: 'player1', visibility: 'hidden' },
-          { id: 5, color: 'yellow', owner: 'player1', visibility: 'hidden' },
-          { id: 6, color: 'green', owner: 'player2', visibility: 'hidden' },
-          { id: 7, color: 'red', owner: 'player1', to: 'player2', visibility: 'hidden' },
-          { id: 8, color: 'yellow', owner: 'player2', to: 'player1', visibility: 'hidden' }
+          { id: 1, globalId: 1, color: 'red', owner: 'deck', visibility: 'hidden' },
+          { id: 2, globalId: 2, color: 'yellow', owner: 'deck', visibility: 'hidden' },
+          { id: 3, globalId: 3, color: 'green', owner: 'deck', visibility: 'hidden' },
+          { id: 4, globalId: 4, color: 'red', owner: 'player1', visibility: 'hidden' },
+          { id: 5, globalId: 5, color: 'yellow', owner: 'player1', visibility: 'hidden' },
+          { id: 6, globalId: 6, color: 'green', owner: 'player2', visibility: 'hidden' },
+          { id: 7, globalId: 7, color: 'red', owner: 'player1', to: 'player2', visibility: 'hidden' },
+          { id: 8, globalId: 8, color: 'yellow', owner: 'player2', to: 'player1', visibility: 'hidden' }
         ],
         
         // 拖拽状态
@@ -531,6 +541,11 @@ export default {
       this.cards.forEach((card, index) => {
         delete card.to; // 清除目标区域
         
+        // 确保每张卡牌都有globalId
+        if (!card.globalId) {
+          card.globalId = card.id;
+        }
+        
         if (index < 3) {
           card.owner = 'deck';
         } else if (index < 5) {
@@ -548,6 +563,10 @@ export default {
           }
         }
       });
+    },
+    // 获取卡牌在cards数组中的索引
+    getCardIndex(card) {
+      return this.cards.findIndex(c => c.id === card.id);
     }
   }
 };
@@ -685,7 +704,20 @@ export default {
   display: inline-block;
 }
 
-/* 卡牌小圆点样式 */
+/* 卡牌编号样式 */
+.card-id {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 确保.card-dot有相对定位以便.card-id正确定位 */
 .card-dot {
   width: 20px;
   height: 20px;
@@ -694,6 +726,7 @@ export default {
   margin-bottom: -4px;
   cursor: pointer;
   display: inline-block;
+  position: relative;
 }
 
 .card-dot.red {
