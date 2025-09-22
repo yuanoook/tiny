@@ -680,6 +680,7 @@ export default {
   height: 20px;
   border-radius: 50%;
   margin: 2px;
+  margin-bottom: -4px;
   cursor: pointer;
   display: inline-block;
 }
