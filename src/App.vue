@@ -348,9 +348,15 @@
                @click="toggleCardVisibility">
             {{ currentCard ? currentCard.id : '' }}
           </div>
-          <div class="option-circle red" @click="setDisguiseColor('red')"></div>
-          <div class="option-circle yellow" @click="setDisguiseColor('yellow')"></div>
-          <div class="option-circle green" @click="setDisguiseColor('green')"></div>
+          <div class="option-circle red" 
+               :class="{ 'active': currentCard && currentCard.isDisguised && currentCard.disguiseColor === 'red' }"
+               @click="setDisguiseColor('red')"></div>
+          <div class="option-circle yellow" 
+               :class="{ 'active': currentCard && currentCard.isDisguised && currentCard.disguiseColor === 'yellow' }"
+               @click="setDisguiseColor('yellow')"></div>
+          <div class="option-circle green" 
+               :class="{ 'active': currentCard && currentCard.isDisguised && currentCard.disguiseColor === 'green' }"
+               @click="setDisguiseColor('green')"></div>
         </div>
       </div>
     </div>
@@ -1054,6 +1060,24 @@ export default {
     transparent 4px
   );
   border-radius: 50%;
+}
+
+/* 激活状态的伪装选项样式 */
+.option-circle.active {
+  transform: scale(1.1);
+  transition: all 0.2s ease;
+}
+
+.option-circle.red.active {
+  box-shadow: 0 0 10px 5px rgba(255, 107, 107, 0.5);
+}
+
+.option-circle.yellow.active {
+  box-shadow: 0 0 10px 5px rgba(249, 201, 66, 0.5);
+}
+
+.option-circle.green.active {
+  box-shadow: 0 0 10px 5px rgba(81, 207, 102, 0.5);
 }
 
 /* 调整弹窗选项布局，使用纯圆点 */
