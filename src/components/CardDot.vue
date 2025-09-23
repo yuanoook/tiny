@@ -176,7 +176,7 @@ export default {
 
 /* 拖拽时隐藏原位置的卡牌 */
 .card-dot.dragging {
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 /* 隐藏卡牌样式 */

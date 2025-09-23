@@ -355,7 +355,10 @@ export default {
         width: '20px',
         height: '20px',
         borderRadius: '50%',
-        margin: '0'
+        margin: '0',
+        boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+        border: '2px solid #ffffff',
+        transform: 'scale(1.1)'
       };
     },
     
