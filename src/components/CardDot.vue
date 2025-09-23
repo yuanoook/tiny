@@ -85,7 +85,6 @@ export default {
   methods: {
     handleDragStart(event) {
       // 将卡牌和事件传递给父组件
-      console.log('handleDragStart inside', this.card, event);
       this.$emit('dragstart', event);
     },
     handleDragEnd(event) {
