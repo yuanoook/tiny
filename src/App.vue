@@ -532,8 +532,6 @@ export default {
     // 处理放置到单元格
     handleDrop(rowZoneId, colZoneId) {
       if (this.draggingCard) {
-        console.log('Dropping card to cell:', this.draggingCard);
-        console.log('Cards count before drop:', this.cards.length);
         // 保存原始拖拽卡牌的引用
         const originalDraggingCard = this.originalDraggingCard || this.draggingCard;
         
@@ -542,10 +540,8 @@ export default {
           // 创建新卡牌
           const newCard = createNewCard(this.nextGlobalId++, rowZoneId, colZoneId);
           
-          console.log('Creating new empty card:', newCard);
           // 添加新卡牌到cards数组
           this.cards.push(newCard);
-          console.log('Cards count after adding new card:', this.cards.length);
         }
         
         // 设置卡牌的目标区域
@@ -564,8 +560,6 @@ export default {
     // 处理放置到表头
     handleDropToHeader(zoneId) {
       if (this.draggingCard) {
-        console.log('Dropping card to header:', this.draggingCard);
-        console.log('Cards count before drop:', this.cards.length);
         // 保存原始拖拽卡牌的引用
         const originalDraggingCard = this.originalDraggingCard || this.draggingCard;
         
@@ -574,10 +568,8 @@ export default {
           // 创建新卡牌
           const newCard = createNewCard(this.nextGlobalId++, zoneId);
           
-          console.log('Creating new empty card:', newCard);
           // 添加新卡牌到cards数组
           this.cards.push(newCard);
-          console.log('Cards count after adding new card:', this.cards.length);
         }
         
         // 将卡牌放回表头（清除to属性）
