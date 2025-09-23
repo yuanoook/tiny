@@ -460,7 +460,7 @@ export default {
     },
     
     // 处理拖拽开始
-    handleDragStart(card, event) {
+    handleDragStart(card, event, element) {
       // 添加调试日志
       console.log('Dragging card ID:', card.id);
       console.log('Dragging card:', JSON.parse(JSON.stringify(card)));
@@ -500,8 +500,9 @@ export default {
         this.draggingCard = card;
       }
       
-      // 计算鼠标相对于卡牌左上角的偏移量
-      const rect = event.target.getBoundingClientRect();
+      // 使用传递过来的 DOM 元素或 event.target 计算鼠标相对于卡牌左上角的偏移量
+      const targetElement = element || event.target;
+      const rect = targetElement.getBoundingClientRect();
       this.dragOffsetX = event.clientX - rect.left;
       this.dragOffsetY = event.clientY - rect.top;
       
