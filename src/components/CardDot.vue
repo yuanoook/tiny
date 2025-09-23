@@ -1,0 +1,209 @@
+<template>
+  <div 
+    class="card-dot"
+    :class="[
+      cardClass,
+      { 
+        'dragging': isDragging, 
+        'disguised': card.isDisguised, 
+        'hidden': card.visibility === 'hidden' && !card.isEmpty,
+        'empty': card.isEmpty,
+        'header-card': isHeaderCard,
+        'deck-card': isDeckCard,
+        'deck-header-card': isDeckHeaderCard
+      }
+    ]"
+    :style="cardStyle"
+    draggable="true"
+    @dragstart="handleDragStart"
+    @dragend="handleDragEnd"
+    @dblclick="handleDoubleClick"
+  >
+    <span class="card-id" v-if="!card.isEmpty || card.globalId">{{ card.globalId }}</span>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "CardDot",
+  props: {
+    card: {
+      type: Object,
+      required: true
+    },
+    isDragging: {
+      type: Boolean,
+      default: false
+    },
+    isHeaderCard: {
+      type: Boolean,
+      default: false
+    },
+    isDeckCard: {
+      type: Boolean,
+      default: false
+    },
+    isDeckHeaderCard: {
+      type: Boolean,
+      default: false
+    },
+    cardStyle: {
+      type: Object,
+      default: () => ({})
+    },
+    index: {
+      type: Number,
+      default: 0
+    }
+  },
+  computed: {
+    cardClass() {
+      if (this.card.isEmpty) {
+        return 'empty';
+      }
+      return this.card.isDisguised ? this.card.disguiseColor : this.card.color;
+    }
+  },
+  methods: {
+    handleDragStart(event) {
+      this.$emit('dragstart', this.card, event);
+    },
+    handleDragEnd(event) {
+      this.$emit('dragend', event);
+    },
+    handleDoubleClick() {
+      this.$emit('doubleclick', this.card);
+    }
+  }
+}
+</script>
+
+<style scoped>
+/* 确保.card-dot有相对定位以便.card-id正确定位 */
+.card-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin: 2px;
+  margin-bottom: -4px;
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+}
+
+/* 头部区域的卡牌样式 */
+.card-dot.header-card {
+  width: 15px;
+  height: 15px;
+  margin: 2px;
+  display: inline-block;
+}
+
+/* 新牌堆和弃牌堆区域的卡牌样式 */
+.card-dot.deck-card {
+  position: absolute !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* 新牌堆和弃牌堆区域的标题卡牌样式 */
+.card-dot.deck-header-card {
+  position: absolute !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.card-dot.red {
+  background-color: #ff6b6b;
+  border: 2px solid #d32f2f;
+}
+
+.card-dot.yellow {
+  background-color: #f9c942;
+  border: 2px solid #fbc02d;
+}
+
+.card-dot.green {
+  background-color: #51cf66;
+  border: 2px solid #388e3c;
+}
+
+/* empty卡牌样式 */
+.card-dot.empty {
+  background-color: transparent;
+  border: 2px dashed #9e9e9e;
+  position: relative;
+}
+
+.card-dot.empty::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(158, 158, 158, 0.3),
+    rgba(158, 158, 158, 0.3) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  border-radius: 50%;
+}
+
+/* 伪装卡牌样式 */
+.card-dot.disguised {
+  position: relative;
+}
+
+/* 伪装卡牌的斜纹半透明白色覆盖 */
+.card-dot.disguised::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.5) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  border-radius: 50%;
+}
+
+/* 拖拽时隐藏原位置的卡牌 */
+.card-dot.dragging {
+  opacity: 0;
+}
+
+/* 隐藏卡牌样式 */
+.card-dot.hidden:not(.disguised) {
+  background-color: #9e9e9e;
+  border: 2px solid #616161;
+}
+
+/* 拖拽时跟随鼠标的卡牌样式 */
+.card-dot.dragging-card {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin: 0;
+  cursor: pointer;
+  display: inline-block;
+}
+
+/* 卡牌编号样式 */
+.card-id {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 1;
+}
+</style>
