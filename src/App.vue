@@ -461,6 +461,8 @@ export default {
     
     // 处理拖拽开始
     handleDragStart(card, event, element) {
+      console.log('fdsafdsafdsafasfsdf')
+      console.log(card, event, element)
       // 添加调试日志
       console.log('Dragging card ID:', card.id);
       console.log('Dragging card:', JSON.parse(JSON.stringify(card)));
