@@ -475,7 +475,6 @@ export default {
     
     // 处理拖拽开始
     handleDragStart(card, event) {
-      console.log('Drag start:', card, event);
       // 如果是原型空心牌，则创建一个新的卡牌实例
       if (card.isPrototype) {
         // 创建新卡牌，继承原始卡牌的部分属性
@@ -499,6 +498,11 @@ export default {
         this.originalDraggingCard = null; // 非原型卡牌不需要保存原始引用
         this.draggingCard = card; // 直接使用原卡牌作为拖拽卡牌
       }
+
+      // 计算鼠标相对于卡牌左上角的偏移量
+      const rect = event.target.getBoundingClientRect();
+      this.dragOffsetX = event.clientX - rect.left;
+      this.dragOffsetY = event.clientY - rect.top;
       
       // 添加鼠标移动事件监听器
       document.addEventListener('mousemove', this.handleDocumentDragOver);
