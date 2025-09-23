@@ -179,6 +179,16 @@ export default {
   opacity: 0.3;
 }
 
+/* 拖拽时完全隐藏空卡牌 */
+.card-dot.empty.dragging {
+  opacity: 0;
+}
+
+/* 拖拽时完全隐藏原型空卡牌 */
+.card-dot.empty.prototype.dragging {
+  opacity: 0;
+}
+
 /* 隐藏卡牌样式 */
 .card-dot.hidden:not(.disguised) {
   background-color: #9e9e9e;
