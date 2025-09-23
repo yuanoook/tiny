@@ -7,7 +7,7 @@
         'dragging': isDragging, 
         'disguised': card.isDisguised, 
         'hidden': card.visibility === 'hidden' && !card.isEmpty,
-        'empty': card.isEmpty,
+        'empty': card.isEmpty && !(card.isDisguised && card.disguiseColor),
         'header-card': isHeaderCard,
         'deck-card': isDeckCard,
         'deck-header-card': isDeckHeaderCard
