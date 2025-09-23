@@ -383,7 +383,7 @@ export default {
       // 生成初始卡牌数据
       const cards = this.generateInitialCards();
       
-      // 为每个玩家生成一张empty卡牌
+      // 为每个玩家生成一张empty卡牌，并标记为第一个空心牌
       players.forEach((player, index) => {
         cards.push({
           id: `empty-${player.id}`,
@@ -392,6 +392,7 @@ export default {
           owner: player.id,
           visibility: 'hidden',
           isEmpty: true, // 标记为empty卡牌
+          isPrototype: true, // 标记为首空心牌原型
           isDisguised: true, // 默认是伪装牌
           disguiseColor: null // 初始伪装颜色为空
         });
@@ -409,6 +410,9 @@ export default {
         
         // 卡牌数据 (新的设计：owner表示拥有者，to表示目标区域)
         cards: cards,
+        
+        // 全局ID计数器
+        nextGlobalId: 61, // 初始值设为61，与现有卡牌ID不冲突
         
         // 拖拽状态
         draggingCard: null,
@@ -561,14 +565,44 @@ export default {
     
     // 处理拖拽开始
     handleDragStart(card, event) {
-      // 为empty卡牌赋予全局ID
-      if (card.isEmpty && !card.globalId) {
-        // 找到当前最大的globalId
-        const maxGlobalId = Math.max(...this.cards.map(c => c.globalId || 0));
-        card.globalId = maxGlobalId + 1;
-      }
+      // 添加调试日志
+      console.log('Dragging card ID:', card.id);
+      console.log('Dragging card:', JSON.parse(JSON.stringify(card)));
+      console.log('isFirstEmptyCard:', card.isFirstEmptyCard);
+      console.log('isEmpty:', card.isEmpty);
+      console.log('Card keys:', Object.keys(card));
+      console.log('Full card object:', card);
       
-      this.draggingCard = card;
+      // 保存原始拖拽卡牌的引用
+      this.originalDraggingCard = card;
+      
+      // 检查是否是原型空心牌（可以拖拽复制）
+      if (card.isPrototype) {
+        console.log('Dragging prototype empty card, will create new card');
+        // 创建新卡牌
+        const newCard = {
+          id: `new-${Date.now()}`,
+          globalId: this.nextGlobalId++,
+          color: 'empty',
+          owner: card.owner,
+          visibility: 'hidden',
+          isEmpty: true,
+          isDisguised: false,
+          disguiseColor: null,
+          isPrototype: false // 新创建的卡牌不是原型
+        };
+        
+        // 设置为正在拖拽的卡牌
+        this.draggingCard = newCard;
+      } else if (card.isEmpty) {
+        console.log('Dragging empty card as normal card');
+        // 空心牌但不是原型，作为普通卡牌处理
+        this.draggingCard = card;
+      } else {
+        console.log('Dragging normal card');
+        // 普通卡牌
+        this.draggingCard = card;
+      }
       
       // 计算鼠标相对于卡牌左上角的偏移量
       const rect = event.target.getBoundingClientRect();
@@ -607,12 +641,40 @@ export default {
     // 处理放置到单元格
     handleDrop(rowZoneId, colZoneId) {
       if (this.draggingCard) {
+        console.log('Dropping card to cell:', this.draggingCard);
+        console.log('Cards count before drop:', this.cards.length);
+        // 保存原始拖拽卡牌的引用
+        const originalDraggingCard = this.originalDraggingCard || this.draggingCard;
+        
+        // 只有原型空心牌才能创建新卡牌
+        if (originalDraggingCard.isPrototype) {
+          // 创建新卡牌
+          const newCard = {
+            id: `new-${Date.now()}`,
+            globalId: this.nextGlobalId++,
+            color: 'empty',
+            owner: rowZoneId, // 新卡牌的拥有者是目标行
+            to: colZoneId, // 新卡牌的目标列
+            visibility: 'hidden',
+            isEmpty: true,
+            isDisguised: false,
+            disguiseColor: null,
+            isPrototype: false // 新创建的卡牌不是原型
+          };
+          
+          console.log('Creating new empty card:', newCard);
+          // 添加新卡牌到cards数组
+          this.cards.push(newCard);
+          console.log('Cards count after adding new card:', this.cards.length);
+        }
+        
         // 设置卡牌的目标区域
         this.draggingCard.to = colZoneId;
         this.draggingCard.owner = rowZoneId;
         
         // 重置拖拽状态
         this.draggingCard = null;
+        this.originalDraggingCard = null;
         
         // 移除鼠标移动事件监听器
         document.removeEventListener('mousemove', this.handleDocumentDragOver);
@@ -622,12 +684,40 @@ export default {
     // 处理放置到表头
     handleDropToHeader(zoneId) {
       if (this.draggingCard) {
+        console.log('Dropping card to header:', this.draggingCard);
+        console.log('Cards count before drop:', this.cards.length);
+        // 保存原始拖拽卡牌的引用
+        const originalDraggingCard = this.originalDraggingCard || this.draggingCard;
+        
+        // 只有原型空心牌才能创建新卡牌
+        if (originalDraggingCard.isPrototype) {
+          // 创建新卡牌
+          const newCard = {
+            id: `new-${Date.now()}`,
+            globalId: this.nextGlobalId++,
+            color: 'empty',
+            owner: zoneId, // 新卡牌的拥有者是目标区域
+            to: null, // 新卡牌放在表头，to属性为null
+            visibility: 'hidden',
+            isEmpty: true,
+            isDisguised: false,
+            disguiseColor: null,
+            isPrototype: false // 新创建的卡牌不是原型
+          };
+          
+          console.log('Creating new empty card:', newCard);
+          // 添加新卡牌到cards数组
+          this.cards.push(newCard);
+          console.log('Cards count after adding new card:', this.cards.length);
+        }
+        
         // 将卡牌放回表头（清除to属性）
         this.draggingCard.to = null;
         this.draggingCard.owner = zoneId;
         
         // 重置拖拽状态
         this.draggingCard = null;
+        this.originalDraggingCard = null;
         
         // 移除鼠标移动事件监听器
         document.removeEventListener('mousemove', this.handleDocumentDragOver);
