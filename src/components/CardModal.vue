@@ -73,11 +73,34 @@ export default {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  margin: 20px 0;
+  padding: 10px 0;
+}
+
+.modal-options-circles .option-circle {
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.modal-options-circles .option-circle:first-child {
+  margin-right: 30px;
+}
+
+.modal-options-circles .option-circle:first-child::after {
+  display: none;
+}
+
+.modal-options-circles .option-circle:not(:first-child) {
+  margin: 0 5px;
 }
 
 .option-circle {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -95,21 +118,93 @@ export default {
 
 .option-circle.red {
   background-color: #ff6b6b;
+  border: 2px solid #d32f2f;
+  position: relative;
+}
+
+.option-circle.red::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.5) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  border-radius: 50%;
 }
 
 .option-circle.yellow {
-  background-color: #ffd166;
+  background-color: #f9c942;
+  border: 2px solid #fbc02d;
+  position: relative;
+}
+
+.option-circle.yellow::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.5) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  border-radius: 50%;
 }
 
 .option-circle.green {
-  background-color: #06d6a0;
+  background-color: #51cf66;
+  border: 2px solid #388e3c;
+  position: relative;
+}
+
+.option-circle.green::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.5) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  border-radius: 50%;
 }
 
 .option-circle.hidden {
-  background-color: #6c757d;
+  background-color: #9e9e9e;
+  border: 2px solid #616161;
 }
 
+/* 激活状态的伪装选项样式 */
 .option-circle.active {
-  box-shadow: 0 0 0 3px white, 0 0 0 6px #333;
+  transform: scale(1.1);
+  transition: all 0.2s ease;
+}
+
+.option-circle.red.active {
+  box-shadow: 0 0 10px 5px rgba(255, 107, 107, 0.5);
+}
+
+.option-circle.yellow.active {
+  box-shadow: 0 0 10px 5px rgba(249, 201, 66, 0.5);
+}
+
+.option-circle.green.active {
+  box-shadow: 0 0 10px 5px rgba(81, 207, 102, 0.5);
 }
 </style>
