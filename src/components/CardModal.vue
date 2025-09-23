@@ -2,8 +2,7 @@
   <div class="modal-overlay" v-if="showCardModal" @click="closeModal">
     <div class="card-modal" @click.stop>
       <div class="modal-options-circles">
-        <div class="option-circle" 
-             :class="currentCard && currentCard.visibility === 'hidden' ? currentCard.color : 'hidden'"
+        <div class="option-circle hidden" 
              @click="toggleCardVisibility">
           {{ currentCard ? currentCard.id : '' }}
         </div>
@@ -111,7 +110,6 @@ export default {
 }
 
 .option-circle.active {
-  border: 3px solid #333;
   box-shadow: 0 0 0 3px white, 0 0 0 6px #333;
 }
 </style>
