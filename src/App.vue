@@ -444,7 +444,17 @@ export default {
     
     // 判断卡牌是否正在被拖拽
     isDragging(card) {
-      return this.draggingCard && this.draggingCard.id === card.id;
+      // 如果有正在拖拽的卡牌，直接比较ID
+      if (this.draggingCard && this.draggingCard.id === card.id) {
+        return true;
+      }
+      
+      // 如果是原型卡牌，还需要检查是否是原始拖拽卡牌
+      if (card.isPrototype && this.originalDraggingCard && this.originalDraggingCard.id === card.id) {
+        return true;
+      }
+      
+      return false;
     },
     
     // 获取列标题区域的卡牌（没有to属性的卡牌）

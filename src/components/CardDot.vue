@@ -187,11 +187,6 @@ export default {
 
 /* 拖拽时隐藏原位置的卡牌 */
 .card-dot.dragging {
-  opacity: 0.3;
-}
-
-/* 拖拽时完全隐藏空卡牌 */
-.card-dot.empty.dragging {
   opacity: 0;
 }
 
@@ -214,6 +209,7 @@ export default {
   margin: 0;
   cursor: pointer;
   display: inline-block;
+  opacity: 1 !important;
 }
 
 /* 卡牌编号样式 */
