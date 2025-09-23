@@ -6,7 +6,7 @@
       { 
         'dragging': isDragging, 
         'disguised': card.isDisguised, 
-        'hidden': card.visibility === 'hidden' && !card.isEmpty,
+        'hidden': card.visibility === 'hidden',
         'empty': card.isEmpty && !(card.isDisguised && card.disguiseColor),
         'header-card': isHeaderCard,
         'deck-card': isDeckCard,
@@ -193,8 +193,14 @@ export default {
 
 /* 隐藏卡牌样式 */
 .card-dot.hidden:not(.disguised) {
-  background-color: #9e9e9e;
-  border: 2px solid #616161;
+  background-color: #9e9e9e !important;
+  border: 2px solid #616161 !important;
+}
+
+/* 隐藏的空卡牌样式 */
+.card-dot.empty.hidden:not(.disguised) {
+  background-color: #9e9e9e !important;
+  border: 2px solid #616161 !important;
 }
 
 /* 拖拽时跟随鼠标的卡牌样式 */
