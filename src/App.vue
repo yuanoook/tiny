@@ -69,7 +69,7 @@
             :card="card"
             :is-dragging="isDragging(card)"
             :is-header-card="true"
-            @dragstart="handleDragStart(card, $event, $event)"
+            @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise"
           />
@@ -97,7 +97,7 @@
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            @dragstart="handleDragStart(card, $event, $event)"
+            @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise"
           />
@@ -126,7 +126,7 @@
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            @dragstart="handleDragStart(card, $event, $event)"
+            @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise"
           />
@@ -153,7 +153,7 @@
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            @dragstart="handleDragStart(card, $event, $event)"
+            @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise(card)"
           />
@@ -175,7 +175,7 @@
             :card="card"
             :is-dragging="isDragging(card)"
             :is-header-card="true"
-            @dragstart="handleDragStart(card, $event, $event)"
+            @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise"
           />
@@ -195,7 +195,7 @@
             :key="`${card.id}`"
             :card="card"
             :is-dragging="isDragging(card)"
-            @dragstart="handleDragStart(card, $event, $event)"
+            @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise(card)"
           />
@@ -224,7 +224,7 @@
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            @dragstart="handleDragStart(card, $event, $event)"
+            @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise"
           />
@@ -251,7 +251,7 @@
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            @dragstart="handleDragStart(card, $event, $event)"
+            @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise"
           />
@@ -475,7 +475,7 @@ export default {
     
     // 处理拖拽开始
     handleDragStart(card, event) {
-      console.log('Drag start:', card);
+      console.log('Drag start:', card, event);
       // 如果是原型空心牌，则创建一个新的卡牌实例
       if (card.isPrototype) {
         // 创建新卡牌，继承原始卡牌的部分属性

@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     handleDragStart(event) {
-      // 将原始 DOM 元素传递给父组件
+      // 将卡牌和事件传递给父组件
       this.$emit('dragstart', this.card, event);
     },
     handleDragEnd(event) {
