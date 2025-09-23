@@ -48,7 +48,7 @@
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            @dragstart="handleDragStart(card, $event)"
+            @dragstart="handleDragStart(card, $event, $event.target)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise"
           />
@@ -69,7 +69,7 @@
             :card="card"
             :is-dragging="isDragging(card)"
             :is-header-card="true"
-            @dragstart="handleDragStart(card, $event)"
+            @dragstart="handleDragStart(card, $event, $event.target)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise"
           />
@@ -97,7 +97,7 @@
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            @dragstart="handleDragStart(card, $event)"
+            @dragstart="handleDragStart(card, $event, $event.target)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise"
           />
@@ -126,7 +126,7 @@
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            @dragstart="handleDragStart(card, $event)"
+            @dragstart="handleDragStart(card, $event, $event.target)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise"
           />
@@ -153,7 +153,7 @@
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            @dragstart="handleDragStart(card, $event)"
+            @dragstart="handleDragStart(card, $event, $event.target)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise(card)"
           />
@@ -175,7 +175,7 @@
             :card="card"
             :is-dragging="isDragging(card)"
             :is-header-card="true"
-            @dragstart="handleDragStart(card, $event)"
+            @dragstart="handleDragStart(card, $event, $event.target)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise"
           />
@@ -195,7 +195,7 @@
             :key="`${card.id}`"
             :card="card"
             :is-dragging="isDragging(card)"
-            @dragstart="handleDragStart(card, $event)"
+            @dragstart="handleDragStart(card, $event, $event.target)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise(card)"
           />
@@ -224,7 +224,7 @@
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            @dragstart="handleDragStart(card, $event)"
+            @dragstart="handleDragStart(card, $event, $event.target)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise"
           />
@@ -251,7 +251,7 @@
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            @dragstart="handleDragStart(card, $event)"
+            @dragstart="handleDragStart(card, $event, $event.target)"
             @dragend="handleDragEnd"
             @doubleclick="toggleCardDisguise"
           />
@@ -461,8 +461,6 @@ export default {
     
     // 处理拖拽开始
     handleDragStart(card, event, element) {
-      console.log('fdsafdsafdsafasfsdf')
-      console.log(card, event, element)
       // 添加调试日志
       console.log('Dragging card ID:', card.id);
       console.log('Dragging card:', JSON.parse(JSON.stringify(card)));
@@ -470,6 +468,8 @@ export default {
       console.log('isEmpty:', card.isEmpty);
       console.log('Card keys:', Object.keys(card));
       console.log('Full card object:', card);
+      console.log('Event:', event);
+      console.log('Element:', element);
       
       // 保存原始拖拽卡牌的引用
       this.originalDraggingCard = card;
@@ -503,10 +503,19 @@ export default {
       }
       
       // 使用传递过来的 DOM 元素或 event.target 计算鼠标相对于卡牌左上角的偏移量
-      const targetElement = element || event.target;
-      const rect = targetElement.getBoundingClientRect();
-      this.dragOffsetX = event.clientX - rect.left;
-      this.dragOffsetY = event.clientY - rect.top;
+      // 添加错误处理，确保我们有有效的 DOM 元素
+      let targetElement = element || event.target;
+      
+      // 如果仍然没有有效的 DOM 元素，使用默认的偏移量
+      if (!targetElement || typeof targetElement.getBoundingClientRect !== 'function') {
+        console.warn('Could not get valid DOM element for drag start, using default offset');
+        this.dragOffsetX = 10;  // 默认偏移量
+        this.dragOffsetY = 10;  // 默认偏移量
+      } else {
+        const rect = targetElement.getBoundingClientRect();
+        this.dragOffsetX = event.clientX - rect.left;
+        this.dragOffsetY = event.clientY - rect.top;
+      }
       
       // 设置拖拽卡牌的初始位置
       this.dragX = event.clientX - this.dragOffsetX;
