@@ -58,10 +58,21 @@ export default {
   },
   computed: {
     cardClass() {
+      const classes = [];
+      
+      // 添加颜色类或empty类
       if (this.card.isEmpty) {
-        return 'empty';
+        classes.push('empty');
+      } else {
+        classes.push(this.card.isDisguised ? this.card.disguiseColor : this.card.color);
       }
-      return this.card.isDisguised ? this.card.disguiseColor : this.card.color;
+      
+      // 如果是原型卡牌，添加prototype类
+      if (this.card.isPrototype) {
+        classes.push('prototype');
+      }
+      
+      return classes.join(' ');
     }
   },
   methods: {
