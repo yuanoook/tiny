@@ -347,26 +347,13 @@
     </div>
     
     <!-- 卡牌操作弹窗 -->
-    <div class="modal-overlay" v-if="showCardModal" @click="showCardModal = false">
-      <div class="card-modal" @click.stop>
-        <div class="modal-options-circles">
-          <div class="option-circle" 
-               :class="currentCard && currentCard.visibility === 'hidden' ? currentCard.color : 'hidden'"
-               @click="toggleCardVisibility">
-            {{ currentCard ? currentCard.id : '' }}
-          </div>
-          <div class="option-circle red" 
-               :class="{ 'active': currentCard && currentCard.isDisguised && currentCard.disguiseColor === 'red' }"
-               @click="setDisguiseColor('red')"></div>
-          <div class="option-circle yellow" 
-               :class="{ 'active': currentCard && currentCard.isDisguised && currentCard.disguiseColor === 'yellow' }"
-               @click="setDisguiseColor('yellow')"></div>
-          <div class="option-circle green" 
-               :class="{ 'active': currentCard && currentCard.isDisguised && currentCard.disguiseColor === 'green' }"
-               @click="setDisguiseColor('green')"></div>
-        </div>
-      </div>
-    </div>
+    <CardModal 
+      :showCardModal="showCardModal" 
+      :currentCard="currentCard"
+      @update:showCardModal="showCardModal = $event"
+      @toggleCardVisibility="toggleCardVisibility"
+      @setDisguiseColor="setDisguiseColor"
+    />
   </div>
 </template>
 
@@ -385,9 +372,13 @@ import {
   createNewCard,
   createPrototypeEmptyCard
 } from './gameState.js';
+import CardModal from './components/CardModal.vue';
 
 export default {
   name: "App",
+  components: {
+    CardModal
+  },
   data() {
       // 初始化玩家列表
       const players = initializePlayers();
