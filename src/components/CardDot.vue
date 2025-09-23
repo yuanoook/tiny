@@ -152,21 +152,10 @@ export default {
   position: relative;
 }
 
-.card-dot.empty::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(158, 158, 158, 0.3),
-    rgba(158, 158, 158, 0.3) 2px,
-    transparent 2px,
-    transparent 4px
-  );
-  border-radius: 50%;
+/* 非隐藏的empty卡牌样式 */
+.card-dot.empty:not(.hidden) {
+  background-color: transparent;
+  border: 2px solid #ffffff;
 }
 
 /* 伪装卡牌样式 */
