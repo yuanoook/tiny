@@ -78,7 +78,7 @@ export default {
   methods: {
     handleDragStart(event) {
       // 将原始 DOM 元素传递给父组件
-      this.$emit('dragstart', this.card, event, event.target);
+      this.$emit('dragstart', this.card, event);
     },
     handleDragEnd(event) {
       this.$emit('dragend', event);
