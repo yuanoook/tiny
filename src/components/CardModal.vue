@@ -2,9 +2,9 @@
   <div class="modal-overlay" v-if="showCardModal" @click="closeModal">
     <div class="card-modal" @click.stop>
       <div class="modal-options-circles">
-        <div class="option-circle hidden" 
+        <div class="option-circle" 
+             :class="currentCard && currentCard.visibility === 'hidden' ? (currentCard ? currentCard.color : 'hidden') : 'hidden'"
              @click="toggleCardVisibility">
-          {{ currentCard ? currentCard.id : '' }}
         </div>
         <div class="option-circle red" 
              :class="{ 'active': currentCard && currentCard.isDisguised && currentCard.disguiseColor === 'red' }"
