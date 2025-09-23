@@ -371,32 +371,32 @@
 </template>
 
 <script>
+import { 
+  initializePlayers, 
+  generateInitialCards, 
+  addEmptyCardsForPlayers,
+  getAllZones,
+  getCardsInColumnHeader,
+  getCardsInRowHeader,
+  getCardsInCell,
+  getCardIndex,
+  isCenterZone,
+  handleRemovePlayerCards,
+  createNewCard,
+  createPrototypeEmptyCard
+} from './gameState.js';
+
 export default {
   name: "App",
   data() {
       // 初始化玩家列表
-      const players = [
-        { id: 'player1', name: '玩家1' },
-        { id: 'player2', name: '玩家2' }
-      ];
+      const players = initializePlayers();
       
       // 生成初始卡牌数据
-      const cards = this.generateInitialCards();
+      let cards = generateInitialCards();
       
       // 为每个玩家生成一张empty卡牌，并标记为第一个空心牌
-      players.forEach((player, index) => {
-        cards.push({
-          id: `empty-${player.id}`,
-          globalId: null, // 初始时没有全局ID
-          color: 'empty',
-          owner: player.id,
-          visibility: 'hidden',
-          isEmpty: true, // 标记为empty卡牌
-          isPrototype: true, // 标记为首空心牌原型
-          isDisguised: true, // 默认是伪装牌
-          disguiseColor: null // 初始伪装颜色为空
-        });
-      });
+      cards = addEmptyCardsForPlayers(players, cards);
       
       return {
         // 玩家列表
@@ -446,19 +446,7 @@ export default {
     
     // 所有区域（新牌堆 + 玩家区域 + 弃牌堆）
     allZones() {
-      // 先获取新牌堆
-      const deckZone = this.baseZones.find(zone => zone.id === 'deck');
-      // 获取弃牌堆
-      const discardZone = this.baseZones.find(zone => zone.id === 'discard');
-      // 获取玩家区域
-      const playerZones = this.players.map(player => ({ id: player.id, name: player.name }));
-      
-      // 返回排序后的区域：新牌堆 + 玩家区域 + 弃牌堆
-      return [
-        deckZone,
-        ...playerZones,
-        discardZone
-      ].filter(zone => zone !== undefined);
+      return getAllZones(this.baseZones, this.players);
     }
   },
   mounted() {
@@ -533,8 +521,7 @@ export default {
     },
     // 判断是否为中心区域（工作区/待转区）
     isCenterZone(rowZoneId, colZoneId) {
-      // 中心区域是所有交叉的格子
-      return true;
+      return isCenterZone(rowZoneId, colZoneId);
     },
     
     // 判断卡牌是否正在被拖拽
@@ -544,23 +531,17 @@ export default {
     
     // 获取列标题区域的卡牌（没有to属性的卡牌）
     getCardsInColumnHeader(zoneId) {
-      return this.cards.filter(card => 
-        card.owner === zoneId && !card.to
-      );
+      return getCardsInColumnHeader(this.cards, zoneId);
     },
     
     // 获取行标题区域的卡牌（没有to属性的卡牌）
     getCardsInRowHeader(zoneId) {
-      return this.cards.filter(card => 
-        card.owner === zoneId && !card.to
-      );
+      return getCardsInRowHeader(this.cards, zoneId);
     },
     
     // 获取单元格中的卡牌（有to属性的卡牌）
     getCardsInCell(rowZoneId, colZoneId) {
-      return this.cards.filter(card => 
-        card.owner === rowZoneId && card.to === colZoneId
-      );
+      return getCardsInCell(this.cards, rowZoneId, colZoneId);
     },
     
     // 处理拖拽开始
@@ -649,18 +630,7 @@ export default {
         // 只有原型空心牌才能创建新卡牌
         if (originalDraggingCard.isPrototype) {
           // 创建新卡牌
-          const newCard = {
-            id: `new-${Date.now()}`,
-            globalId: this.draggingCard.globalId,
-            color: 'empty',
-            owner: rowZoneId, // 新卡牌的拥有者是目标行
-            to: colZoneId, // 新卡牌的目标列
-            visibility: 'hidden',
-            isEmpty: true,
-            isDisguised: false,
-            disguiseColor: null,
-            isPrototype: false // 新创建的卡牌不是原型
-          };
+          const newCard = createNewCard(this.draggingCard.globalId, rowZoneId, colZoneId);
           
           console.log('Creating new empty card:', newCard);
           // 添加新卡牌到cards数组
@@ -692,18 +662,7 @@ export default {
         // 只有原型空心牌才能创建新卡牌
         if (originalDraggingCard.isPrototype) {
           // 创建新卡牌
-          const newCard = {
-            id: `new-${Date.now()}`,
-            globalId: this.nextGlobalId++,
-            color: 'empty',
-            owner: zoneId, // 新卡牌的拥有者是目标区域
-            to: null, // 新卡牌放在表头，to属性为null
-            visibility: 'hidden',
-            isEmpty: true,
-            isDisguised: false,
-            disguiseColor: null,
-            isPrototype: false // 新创建的卡牌不是原型
-          };
+          const newCard = createNewCard(this.nextGlobalId++, zoneId);
           
           console.log('Creating new empty card:', newCard);
           // 添加新卡牌到cards数组
@@ -736,14 +695,7 @@ export default {
         this.players = this.players.filter(player => player.id !== playerId);
         
         // 将该玩家的卡牌移至弃牌堆
-        this.cards.forEach(card => {
-          if (card.owner === playerId) {
-            card.owner = 'discard';
-          }
-          if (card.to === playerId) {
-            card.to = null;
-          }
-        });
+        this.cards = handleRemovePlayerCards(this.cards, playerId);
       }
     },
     
@@ -754,34 +706,12 @@ export default {
     },
     // 生成初始卡牌数据
     generateInitialCards() {
-      const colors = ['red', 'yellow', 'green'];
-      const cards = [];
-      
-      // 生成60张卡牌，每种颜色各20张
-      for (let i = 0; i < 60; i++) {
-        const colorIndex = Math.floor(i / 20); // 每20张为一种颜色
-        const color = colors[colorIndex];
-        cards.push({
-          id: i + 1,
-          globalId: i + 1,
-          color: color,
-          owner: 'deck', // 所有卡牌初始时都在新牌堆
-          visibility: 'hidden'
-        });
-      }
-      
-      // Fisher-Yates 洗牌算法，将卡牌随机打散
-      for (let i = cards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [cards[i], cards[j]] = [cards[j], cards[i]];
-      }
-      
-      return cards;
+      return generateInitialCards();
     },
     
     // 获取卡牌在cards数组中的索引
     getCardIndex(card) {
-      return this.cards.findIndex(c => c.id === card.id);
+      return getCardIndex(this.cards, card);
     }
   }
 };
