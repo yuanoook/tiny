@@ -539,7 +539,7 @@ export default {
         // 只有原型空心牌才能创建新卡牌
         if (originalDraggingCard.isPrototype) {
           // 创建新卡牌
-          const newCard = createNewCard(this.draggingCard.globalId, rowZoneId, colZoneId);
+          const newCard = createNewCard(this.nextGlobalId++, rowZoneId, colZoneId);
           
           console.log('Creating new empty card:', newCard);
           // 添加新卡牌到cards数组
