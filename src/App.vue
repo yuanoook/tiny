@@ -35,33 +35,23 @@
         >
           <span class="header-text">{{ zone.name }}</span>
           <!-- 显示在列标题区域的卡牌 -->
-          <div 
+          <CardDot
             v-for="(card, index) in getCardsInColumnHeader(zone.id)" 
             :key="`col-header-${card.id}`"
-            :class="[
-              'card-dot', 
-              'header-card',
-              card.isDisguised ? card.disguiseColor : card.color, 
-              { 
-                'dragging': isDragging(card), 
-                'disguised': card.isDisguised, 
-                'hidden': card.visibility === 'hidden',
-                'deck-header-card': (zone.id === 'deck' || zone.id === 'discard')
-              }
-            ]"
-            :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
+            :card="card"
+            :is-dragging="isDragging(card)"
+            :is-header-card="true"
+            :is-deck-header-card="(zone.id === 'deck' || zone.id === 'discard')"
+            :card-style="(zone.id === 'deck' || zone.id === 'discard') ? { 
               position: 'absolute',
               left: `${5 + (index * 15) % 69}px`,
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
-            @dblclick="toggleCardDisguise(card)"
-          >
-            <span class="card-id">{{ card.globalId }}</span>
-          </div>
+            @doubleclick="toggleCardDisguise"
+          />
         </div>
         <!-- 玩家区域列 -->
         <div 
@@ -73,18 +63,16 @@
         >
           <span class="header-text">{{ player.name }}</span>
           <!-- 显示在列标题区域的卡牌 -->
-          <div 
-            class="card-dot header-card" 
+          <CardDot
             v-for="(card, index) in getCardsInColumnHeader(player.id)" 
             :key="`col-header-${card.id}`"
-            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
-            draggable="true"
+            :card="card"
+            :is-dragging="isDragging(card)"
+            :is-header-card="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
-            @dblclick="toggleCardDisguise(card)"
-          >
-            <span class="card-id">{{ card.globalId }}</span>
-          </div>
+            @doubleclick="toggleCardDisguise"
+          />
         </div>
         <!-- 弃牌堆列 -->
         <div 
@@ -96,33 +84,23 @@
         >
           <span class="header-text">{{ zone.name }}</span>
           <!-- 显示在列标题区域的卡牌 -->
-          <div 
+          <CardDot
             v-for="(card, index) in getCardsInColumnHeader(zone.id)" 
             :key="`col-header-${card.id}`"
-            :class="[
-              'card-dot', 
-              'header-card',
-              card.isDisguised ? card.disguiseColor : card.color, 
-              { 
-                'dragging': isDragging(card), 
-                'disguised': card.isDisguised, 
-                'hidden': card.visibility === 'hidden',
-                'deck-header-card': (zone.id === 'deck' || zone.id === 'discard')
-              }
-            ]"
-            :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
+            :card="card"
+            :is-dragging="isDragging(card)"
+            :is-header-card="true"
+            :is-deck-header-card="(zone.id === 'deck' || zone.id === 'discard')"
+            :card-style="(zone.id === 'deck' || zone.id === 'discard') ? { 
               position: 'absolute',
               left: `${5 + (index * 15) % 69}px`,
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
-            @dblclick="toggleCardDisguise(card)"
-          >
-            <span class="card-id">{{ card.globalId }}</span>
-          </div>
+            @doubleclick="toggleCardDisguise"
+          />
         </div>
       </div>
       
@@ -233,33 +211,23 @@
         >
           <span class="header-text">{{ zone.name }}</span>
           <!-- 显示在行标题区域的卡牌 -->
-          <div 
+          <CardDot
             v-for="(card, index) in getCardsInRowHeader(zone.id)" 
             :key="`row-header-${card.id}`"
-            :class="[
-              'card-dot', 
-              'header-card',
-              card.isDisguised ? card.disguiseColor : card.color, 
-              { 
-                'dragging': isDragging(card), 
-                'disguised': card.isDisguised, 
-                'hidden': card.visibility === 'hidden',
-                'deck-header-card': (zone.id === 'deck' || zone.id === 'discard')
-              }
-            ]"
-            :style="(zone.id === 'deck' || zone.id === 'discard') ? { 
+            :card="card"
+            :is-dragging="isDragging(card)"
+            :is-header-card="true"
+            :is-deck-header-card="(zone.id === 'deck' || zone.id === 'discard')"
+            :card-style="(zone.id === 'deck' || zone.id === 'discard') ? { 
               position: 'absolute',
               left: `${5 + (index * 15) % 69}px`,
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
-            @dblclick="toggleCardDisguise(card)"
-          >
-            <span class="card-id">{{ card.globalId }}</span>
-          </div>
+            @doubleclick="toggleCardDisguise"
+          />
         </div>
         <!-- 弃牌堆到各区域的单元格 -->
         <div 
@@ -271,32 +239,22 @@
           @drop="handleDrop(zone.id, colZone.id)"
         >
           <!-- 显示该区域的卡牌 -->
-          <div 
+          <CardDot
             v-for="(card, index) in getCardsInCell(zone.id, colZone.id)" 
             :key="`${card.id}`"
-            :class="[
-              'card-dot', 
-              card.isDisguised ? card.disguiseColor : card.color, 
-              { 
-                'dragging': isDragging(card), 
-                'disguised': card.isDisguised, 
-                'hidden': card.visibility === 'hidden',
-                'deck-card': (zone.id === 'deck' || zone.id === 'discard') && (colZone.id === 'deck' || colZone.id === 'discard')
-              }
-            ]"
-            :style="(zone.id === 'deck' || zone.id === 'discard') && (colZone.id === 'deck' || colZone.id === 'discard') ? { 
+            :card="card"
+            :is-dragging="isDragging(card)"
+            :is-deck-card="(zone.id === 'deck' || zone.id === 'discard') && (colZone.id === 'deck' || colZone.id === 'discard')"
+            :card-style="(zone.id === 'deck' || zone.id === 'discard') && (colZone.id === 'deck' || colZone.id === 'discard') ? { 
               position: 'absolute',
               left: `${5 + (index * 15) % 69}px`,
               top: `${5 + Math.floor(index / 5) * 15 % 65}px`,
               zIndex: index
             } : {}"
-            draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
-            @dblclick="toggleCardDisguise(card)"
-          >
-            <span class="card-id">{{ card.globalId }}</span>
-          </div>
+            @doubleclick="toggleCardDisguise"
+          />
         </div>
       </div>
     </div>
