@@ -651,7 +651,7 @@ export default {
           // 创建新卡牌
           const newCard = {
             id: `new-${Date.now()}`,
-            globalId: this.nextGlobalId++,
+            globalId: this.draggingCard.globalId,
             color: 'empty',
             owner: rowZoneId, // 新卡牌的拥有者是目标行
             to: colZoneId, // 新卡牌的目标列
