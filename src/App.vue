@@ -501,8 +501,8 @@ export default {
 
       // 计算鼠标相对于卡牌左上角的偏移量
       const rect = event.target.getBoundingClientRect();
-      this.dragOffsetX = event.clientX - rect.left - 2;
-      this.dragOffsetY = event.clientY - rect.top - 2;
+      this.dragOffsetX = event.clientX - rect.left;
+      this.dragOffsetY = event.clientY - rect.top + 5;
       
       // 添加鼠标移动事件监听器
       document.addEventListener('mousemove', this.handleDocumentDragOver);
