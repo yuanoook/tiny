@@ -215,13 +215,20 @@
             class="card-dot header-card" 
             v-for="(card, index) in getCardsInRowHeader(player.id)" 
             :key="`row-header-${card.id}`"
-            :class="[card.isDisguised ? card.disguiseColor : card.color, { 'dragging': isDragging(card), 'disguised': card.isDisguised, 'hidden': card.visibility === 'hidden' }]"
+            :class="[
+              card.isEmpty ? 'empty' : (card.isDisguised ? card.disguiseColor : card.color), 
+              { 
+                'dragging': isDragging(card), 
+                'disguised': card.isDisguised && !card.isEmpty, 
+                'hidden': card.visibility === 'hidden' && !card.isEmpty
+              }
+            ]"
             draggable="true"
             @dragstart="handleDragStart(card, $event)"
             @dragend="handleDragEnd"
             @dblclick="toggleCardDisguise(card)"
           >
-            <span class="card-id">{{ card.globalId }}</span>
+            <span class="card-id" v-if="!card.isEmpty || card.globalId">{{ card.globalId }}</span>
           </div>
         </div>
         <!-- 玩家到各区域的单元格 -->
@@ -367,12 +374,32 @@
 export default {
   name: "App",
   data() {
+      // 初始化玩家列表
+      const players = [
+        { id: 'player1', name: '玩家1' },
+        { id: 'player2', name: '玩家2' }
+      ];
+      
+      // 生成初始卡牌数据
+      const cards = this.generateInitialCards();
+      
+      // 为每个玩家生成一张empty卡牌
+      players.forEach((player, index) => {
+        cards.push({
+          id: `empty-${player.id}`,
+          globalId: null, // 初始时没有全局ID
+          color: 'empty',
+          owner: player.id,
+          visibility: 'hidden',
+          isEmpty: true, // 标记为empty卡牌
+          isDisguised: true, // 默认是伪装牌
+          disguiseColor: null // 初始伪装颜色为空
+        });
+      });
+      
       return {
         // 玩家列表
-        players: [
-          { id: 'player1', name: '玩家1' },
-          { id: 'player2', name: '玩家2' }
-        ],
+        players: players,
         
         // 基础区域
         baseZones: [
@@ -381,7 +408,7 @@ export default {
         ],
         
         // 卡牌数据 (新的设计：owner表示拥有者，to表示目标区域)
-        cards: this.generateInitialCards(),
+        cards: cards,
         
         // 拖拽状态
         draggingCard: null,
@@ -480,13 +507,16 @@ export default {
     // 设置卡牌伪装颜色
     setDisguiseColor(color) {
       if (this.currentCard) {
-        // 如果点击的是当前伪装颜色，则取消伪装
-        if (this.currentCard.isDisguised && this.currentCard.disguiseColor === color) {
-          // 取消伪装
+        // 如果是empty卡牌且还没有设置伪装颜色，则设置伪装颜色
+        if (this.currentCard.isEmpty && !this.currentCard.disguiseColor) {
+          this.currentCard.disguiseColor = color;
+        }
+        // 如果卡牌已经是该颜色的伪装，则取消伪装
+        else if (this.currentCard.isDisguised && this.currentCard.disguiseColor === color) {
           this.currentCard.isDisguised = false;
-          delete this.currentCard.disguiseColor;
+          this.currentCard.disguiseColor = null;
         } else {
-          // 设置伪装状态和颜色
+          // 设置新的伪装颜色
           this.currentCard.isDisguised = true;
           this.currentCard.disguiseColor = color;
           // 如果是明牌，变为暗牌以保持伪装状态
@@ -531,6 +561,13 @@ export default {
     
     // 处理拖拽开始
     handleDragStart(card, event) {
+      // 为empty卡牌赋予全局ID
+      if (card.isEmpty && !card.globalId) {
+        // 找到当前最大的globalId
+        const maxGlobalId = Math.max(...this.cards.map(c => c.globalId || 0));
+        card.globalId = maxGlobalId + 1;
+      }
+      
       this.draggingCard = card;
       
       // 计算鼠标相对于卡牌左上角的偏移量
@@ -840,6 +877,30 @@ export default {
 .card-dot.green {
   background-color: #51cf66;
   border: 2px solid #388e3c;
+}
+
+/* empty卡牌样式 */
+.card-dot.empty {
+  background-color: transparent;
+  border: 2px dashed #9e9e9e;
+  position: relative;
+}
+
+.card-dot.empty::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(158, 158, 158, 0.3),
+    rgba(158, 158, 158, 0.3) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  border-radius: 50%;
 }
 
 /* 伪装卡牌样式 */
