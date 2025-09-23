@@ -197,14 +197,65 @@ export default {
 }
 
 .option-circle.red.active {
-  box-shadow: 0 0 10px 5px rgba(255, 107, 107, 0.5);
+  box-shadow: 0 0 10px 5px rgba(255, 107, 107, 0.7);
 }
 
 .option-circle.yellow.active {
-  box-shadow: 0 0 10px 5px rgba(249, 201, 66, 0.5);
+  box-shadow: 0 0 10px 5px rgba(249, 201, 66, 0.7);
 }
 
 .option-circle.green.active {
-  box-shadow: 0 0 10px 5px rgba(81, 207, 102, 0.5);
+  box-shadow: 0 0 10px 5px rgba(81, 207, 102, 0.7);
+}
+
+/* 弹窗样式 */
+.card-modal {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  border: 1px solid white;
+}
+
+.card-modal h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.modal-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.modal-option {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-option:hover {
+  background-color: #f5f5f5;
+}
+
+.close-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.close-button:hover {
+  background-color: #359c6d;
 }
 </style>

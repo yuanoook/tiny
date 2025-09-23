@@ -984,75 +984,11 @@ export default {
   font-size: 12px;
 }
 
-/* 弹窗样式 */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.card-modal {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  width: 300px;
-  border: 1px solid white;
-}
-
-.card-modal h3 {
-  margin-top: 0;
-  text-align: center;
-}
-
-.modal-options {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin: 20px 0;
-}
-
-.modal-option {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.modal-option:hover {
-  background-color: #f5f5f5;
-}
-
 /* 调整弹窗选项布局，使用纯圆点 */
 .modal-options-simple {
   display: flex;
   flex-direction: column;
   gap: 15px;
   margin: 20px 0;
-}
-
-.close-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.close-button:hover {
-  background-color: #359c6d;
 }
 </style>
