@@ -77,6 +77,7 @@ import TableRow from './components/table/TableRow.vue'
 import { useDragAndDrop } from './composables/useDragAndDrop.js'
 import { useGameLogic } from './composables/useGameLogic.js'
 import { useCardOperations } from './composables/useCardOperations.js'
+import { moveCardToZone } from './gameState.js'
 
 export default {
   name: 'App',

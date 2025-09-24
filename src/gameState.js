@@ -148,6 +148,21 @@ const createPrototypeEmptyCard = (owner) => {
   };
 };
 
+// 移动卡牌到指定区域
+const moveCardToZone = (cards, cardId, rowZoneId, colZoneId = null) => {
+  return cards.map(card => {
+    if (card.id === cardId) {
+      // 更新卡牌的owner和to属性
+      return {
+        ...card,
+        owner: rowZoneId,
+        to: colZoneId
+      };
+    }
+    return card;
+  });
+};
+
 export {
   initializePlayers,
   generateInitialCards,
@@ -160,5 +175,6 @@ export {
   isCenterZone,
   handleRemovePlayerCards,
   createNewCard,
-  createPrototypeEmptyCard
+  createPrototypeEmptyCard,
+  moveCardToZone
 };
