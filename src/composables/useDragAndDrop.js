@@ -80,20 +80,9 @@ export function useDragAndDrop() {
       
       // 只有原型空心牌才能创建新卡牌
       if (originalCard.isPrototype) {
-        // 创建新卡牌
-        // 获取并递增全局ID
-        let globalId;
-        if (nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.hasOwnProperty('value')) {
-          // nextGlobalId是ref对象，先获取当前值再递增
-          globalId = nextGlobalId.value;
-          console.log('Before incrementing nextGlobalId:', nextGlobalId.value);
-          nextGlobalId.value++;
-          console.log('After incrementing nextGlobalId:', nextGlobalId.value);
-        } else {
-          // 回退到默认值
-          globalId = 61;
-          console.log('Using fallback globalId:', globalId);
-        }
+        // 创建新卡牌，使用cards数组长度减去原型卡牌数量再加1作为全局ID
+        const prototypeCount = cards.filter(card => card.isPrototype).length;
+        const globalId = cards.length - prototypeCount + 1;
         const newCard = createNewCard(globalId, rowZoneId, colZoneId);
         
         // 添加新卡牌到cards数组
@@ -124,20 +113,9 @@ export function useDragAndDrop() {
       
       // 只有原型空心牌才能创建新卡牌
       if (originalCard.isPrototype) {
-        // 创建新卡牌
-        // 获取并递增全局ID
-        let globalId;
-        if (nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.hasOwnProperty('value')) {
-          // nextGlobalId是ref对象，先获取当前值再递增
-          globalId = nextGlobalId.value;
-          console.log('Before incrementing nextGlobalId in header:', nextGlobalId.value);
-          nextGlobalId.value++;
-          console.log('After incrementing nextGlobalId in header:', nextGlobalId.value);
-        } else {
-          // 回退到默认值
-          globalId = 61;
-          console.log('Using fallback globalId in header:', globalId);
-        }
+        // 创建新卡牌，使用cards数组长度减去原型卡牌数量再加1作为全局ID
+        const prototypeCount = cards.filter(card => card.isPrototype).length;
+        const globalId = cards.length - prototypeCount + 1;
         const newCard = createNewCard(globalId, zoneId);
         
         // 添加新卡牌到cards数组
