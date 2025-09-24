@@ -22,7 +22,8 @@ const generateInitialCards = () => {
       globalId: i + 1,
       color: color,
       owner: 'deck', // 所有卡牌初始时都在新牌堆
-      visibility: 'hidden'
+      visibility: 'hidden',
+      updateTime: Date.now() // 添加更新时间字段
     });
   }
   
@@ -48,7 +49,8 @@ const addEmptyCardsForPlayers = (players, cards) => {
       isEmpty: true, // 标记为empty卡牌
       isPrototype: true, // 标记为首空心牌原型
       isDisguised: true, // 默认是伪装牌
-      disguiseColor: null // 初始伪装颜色为空
+      disguiseColor: null, // 初始伪装颜色为空
+      updateTime: Date.now() // 添加更新时间字段
     });
   });
   
@@ -74,23 +76,39 @@ const getAllZones = (baseZones, players) => {
 
 // 获取列标题区域的卡牌（没有to属性的卡牌）
 const getCardsInColumnHeader = (cards, zoneId) => {
-  return cards.filter(card => 
+  const filteredCards = cards.filter(card => 
     card.owner === zoneId && !card.to
   );
+  
+  // 对除新牌堆外的卡牌按updateTime排序
+  if (zoneId !== 'deck') {
+    return filteredCards.sort((a, b) => a.updateTime - b.updateTime);
+  }
+  
+  return filteredCards;
 };
 
 // 获取行标题区域的卡牌（没有to属性的卡牌）
 const getCardsInRowHeader = (cards, zoneId) => {
-  return cards.filter(card => 
+  const filteredCards = cards.filter(card => 
     card.owner === zoneId && !card.to
   );
+  
+  // 对除新牌堆外的卡牌按updateTime排序
+  if (zoneId !== 'deck') {
+    return filteredCards.sort((a, b) => a.updateTime - b.updateTime);
+  }
+  
+  return filteredCards;
 };
 
 // 获取单元格中的卡牌（有to属性的卡牌）
 const getCardsInCell = (cards, rowZoneId, colZoneId) => {
-  return cards.filter(card => 
+  const filteredCards = cards.filter(card => 
     card.owner === rowZoneId && card.to === colZoneId
   );
+  
+  return filteredCards.sort((a, b) => a.updateTime - b.updateTime);
 };
 
 // 获取卡牌在cards数组中的索引
@@ -129,7 +147,8 @@ const createNewCard = (nextGlobalId, owner, to = null) => {
     isEmpty: true,
     isDisguised: false,
     disguiseColor: null,
-    isPrototype: false
+    isPrototype: false,
+    updateTime: Date.now() // 添加更新时间字段
   };
 };
 
@@ -144,7 +163,8 @@ const createPrototypeEmptyCard = (owner) => {
     isEmpty: true,
     isPrototype: true,
     isDisguised: true,
-    disguiseColor: null
+    disguiseColor: null,
+    updateTime: Date.now() // 添加更新时间字段
   };
 };
 
@@ -152,11 +172,12 @@ const createPrototypeEmptyCard = (owner) => {
 const moveCardToZone = (cards, cardId, rowZoneId, colZoneId = null) => {
   return cards.map(card => {
     if (card.id === cardId) {
-      // 更新卡牌的owner和to属性
+      // 更新卡牌的owner和to属性，并更新时间戳
       return {
         ...card,
         owner: rowZoneId,
-        to: colZoneId
+        to: colZoneId,
+        updateTime: Date.now()
       };
     }
     return card;

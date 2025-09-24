@@ -1,7 +1,7 @@
 // useDragAndDrop.js - 拖拽相关的可组合函数
 
 import { ref, computed } from 'vue';
-import { createNewCard } from '../gameState.js';
+import { createNewCard, moveCardToZone } from '../gameState.js';
 
 export function useDragAndDrop() {
   // 拖拽状态
@@ -87,11 +87,12 @@ export function useDragAndDrop() {
         
         // 添加新卡牌到cards数组
         cards.push(newCard);
+      } else {
+        // 对于非原型卡牌，使用moveCardToZone函数更新位置和updateTime
+        const updatedCards = moveCardToZone(cards, draggingCard.value.id, rowZoneId, colZoneId);
+        // 更新cards数组
+        cards.splice(0, cards.length, ...updatedCards);
       }
-      
-      // 设置卡牌的目标区域
-      draggingCard.value.to = colZoneId;
-      draggingCard.value.owner = rowZoneId;
       
       // 重置拖拽状态
       draggingCard.value = null;
@@ -120,11 +121,12 @@ export function useDragAndDrop() {
         
         // 添加新卡牌到cards数组
         cards.push(newCard);
+      } else {
+        // 对于非原型卡牌，使用moveCardToZone函数更新位置和updateTime
+        const updatedCards = moveCardToZone(cards, draggingCard.value.id, zoneId, null);
+        // 更新cards数组
+        cards.splice(0, cards.length, ...updatedCards);
       }
-      
-      // 将卡牌放回表头（清除to属性）
-      draggingCard.value.to = null;
-      draggingCard.value.owner = zoneId;
       
       // 重置拖拽状态
       draggingCard.value = null;
