@@ -32,7 +32,7 @@
       :key="`${zone.id}-${colZone.id}`"
       :class="[`cell-${zone.id}-${colZone.id}`, { 'center-zone': isCenterZone(zone.id, colZone.id), 'deck-cell': zone.id === 'deck', 'discard-cell': zone.id === 'discard' }]"
       @dragover.prevent="handleDragOver"
-      @drop="handleDrop(zone.id, colZone.id)"
+      @drop="handleDrop(zone.id, colZone.id, cards, nextGlobalId)"
     >
       <!-- 显示该区域的卡牌 -->
       <CardDot
@@ -75,6 +75,10 @@ export default {
     },
     cards: {
       type: Array,
+      required: true
+    },
+    nextGlobalId: {
+      type: Number,
       required: true
     },
     isDragging: {

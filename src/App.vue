@@ -26,6 +26,7 @@
         :base-zones="baseZones"
         :players="players"
         :cards="cards"
+        :next-global-id="nextGlobalId"
         :is-dragging="isDragging"
         :handle-drag-start="handleDragStart"
         :handle-drag-end="handleDragEnd"
@@ -39,6 +40,7 @@
         :zones="allZones"
         :all-zones="allZones"
         :cards="cards"
+        :next-global-id="nextGlobalId"
         :is-dragging="isDragging"
         :handle-drag-start="handleDragStart"
         :handle-drag-end="handleDragEnd"
@@ -121,7 +123,8 @@ export default {
       isCenterZone,
       addPlayer,
       removePlayer,
-      resetGame
+      resetGame,
+      nextGlobalId
     } = useGameLogic()
     
     // 使用卡牌操作逻辑
@@ -213,6 +216,7 @@ export default {
       showCardModal,
       currentCard,
       dragImage,
+      nextGlobalId,
       
       // 计算属性
       draggingCardStyle,

@@ -104,6 +104,10 @@ export default {
       type: Array,
       required: true
     },
+    nextGlobalId: {
+      type: Number,
+      required: true
+    },
     isDragging: {
       type: Function,
       required: true
