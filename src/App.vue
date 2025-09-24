@@ -142,10 +142,10 @@ export default {
         // 只有原型空心牌才能创建新卡牌
         if (originalCard.isPrototype) {
           // 创建新卡牌
-          const newCard = createNewCard(nextGlobalId.value++, rowZoneId, colZoneId);
+          const newCard = createNewCard(nextGlobalId++, rowZoneId, colZoneId);
           
           // 添加新卡牌到cards数组
-          cards.value.push(newCard);
+          cards.push(newCard);
         }
         
         // 设置卡牌的目标区域
@@ -173,10 +173,10 @@ export default {
         // 只有原型空心牌才能创建新卡牌
         if (originalCard.isPrototype) {
           // 创建新卡牌
-          const newCard = createNewCard(nextGlobalId.value++, zoneId);
+          const newCard = createNewCard(nextGlobalId++, zoneId);
           
           // 添加新卡牌到cards数组
-          cards.value.push(newCard);
+          cards.push(newCard);
         }
         
         // 将卡牌放回表头（清除to属性）
