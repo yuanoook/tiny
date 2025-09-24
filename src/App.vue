@@ -105,10 +105,7 @@ export default {
     
     // 处理拖拽开始
     const handleDragStart = (card, event) => {
-      console.log('handleDragStart called with card:', card)
-      console.log('Before handleDragStart - draggingCard.value:', draggingCard.value)
       useDragAndDropHandleDragStart(card, event)
-      console.log('After handleDragStart - draggingCard.value:', draggingCard.value)
     }
     
     // 使用游戏逻辑

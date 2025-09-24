@@ -15,7 +15,6 @@ export function useDragAndDrop() {
 
   // 处理拖拽开始
   const handleDragStart = (card, event) => {
-    console.log(card, event)
     // 如果是原型空心牌，则创建一个新的卡牌实例
     if (card.isPrototype) {
       // 创建新卡牌，继承原始卡牌的部分属性
