@@ -100,7 +100,9 @@ export default {
       handleDragStart: useDragAndDropHandleDragStart,
       handleDocumentDragOver,
       handleDragOver,
-      handleDragEnd
+      handleDragEnd,
+      handleDrop,
+      handleDropToHeader
     } = useDragAndDrop()
     
     // 处理拖拽开始
@@ -132,68 +134,6 @@ export default {
       toggleCardVisibility,
       setDisguiseColor
     } = useCardOperations()
-    
-    // 处理放置事件
-    const handleDrop = (rowZoneId, colZoneId, cards, nextGlobalId) => {
-      if (draggingCard.value) {
-        // 保存原始拖拽卡牌的引用
-        const originalCard = originalDraggingCard.value || draggingCard.value;
-        
-        // 只有原型空心牌才能创建新卡牌
-        if (originalCard.isPrototype) {
-          // 创建新卡牌
-          const newCard = createNewCard(nextGlobalId.value++, rowZoneId, colZoneId);
-          
-          // 添加新卡牌到cards数组
-          cards.push(newCard);
-        }
-        
-        // 设置卡牌的目标区域
-        draggingCard.value.to = colZoneId;
-        draggingCard.value.owner = rowZoneId;
-        
-        // 重置拖拽状态
-        draggingCard.value = null;
-        originalDraggingCard.value = null;
-        
-        // 移除拖拽图像
-        if (dragImage.value) {
-          document.body.removeChild(dragImage.value)
-          dragImage.value = null
-        }
-      }
-    }
-    
-    // 处理放置到标题事件
-    const handleDropToHeader = (zoneId, cards, nextGlobalId) => {
-      if (draggingCard.value) {
-        // 保存原始拖拽卡牌的引用
-        const originalCard = originalDraggingCard.value || draggingCard.value;
-        
-        // 只有原型空心牌才能创建新卡牌
-        if (originalCard.isPrototype) {
-          // 创建新卡牌
-          const newCard = createNewCard(nextGlobalId.value++, zoneId);
-          
-          // 添加新卡牌到cards数组
-          cards.push(newCard);
-        }
-        
-        // 将卡牌放回表头（清除to属性）
-        draggingCard.value.to = null;
-        draggingCard.value.owner = zoneId;
-        
-        // 重置拖拽状态
-        draggingCard.value = null;
-        originalDraggingCard.value = null;
-        
-        // 移除拖拽图像
-        if (dragImage.value) {
-          document.body.removeChild(dragImage.value)
-          dragImage.value = null
-        }
-      }
-    }
     
     // 处理键盘事件
     const handleKeydown = (event) => {

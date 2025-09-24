@@ -78,14 +78,26 @@ export function useDragAndDrop() {
       // 只有原型空心牌才能创建新卡牌
       if (originalCard.isPrototype) {
         // 创建新卡牌
-        // 确保nextGlobalId是ref对象
-        const globalId = nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.value !== undefined 
-          ? nextGlobalId.value++ 
-          : (typeof nextGlobalId === 'number' ? nextGlobalId++ : 61);
+        // 确保nextGlobalId是ref对象并正确递增
+        let globalId;
+        if (nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.value !== undefined) {
+          globalId = nextGlobalId.value;
+          nextGlobalId.value++;
+        } else {
+          globalId = 61; // 默认值
+          // 如果nextGlobalId是数字类型，递增它
+          if (typeof nextGlobalId === 'number') {
+            nextGlobalId++;
+          }
+        }
         const newCard = createNewCard(globalId, rowZoneId, colZoneId);
         
         // 添加新卡牌到cards数组
-        cards.value.push(newCard);
+        if (cards && typeof cards.push === 'function') {
+          cards.push(newCard);
+        } else if (cards && cards.value && typeof cards.value.push === 'function') {
+          cards.value.push(newCard);
+        }
       }
       
       // 设置卡牌的目标区域
@@ -110,14 +122,26 @@ export function useDragAndDrop() {
       // 只有原型空心牌才能创建新卡牌
       if (originalCard.isPrototype) {
         // 创建新卡牌
-        // 确保nextGlobalId是ref对象
-        const globalId = nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.value !== undefined 
-          ? nextGlobalId.value++ 
-          : (typeof nextGlobalId === 'number' ? nextGlobalId++ : 61);
+        // 确保nextGlobalId是ref对象并正确递增
+        let globalId;
+        if (nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.value !== undefined) {
+          globalId = nextGlobalId.value;
+          nextGlobalId.value++;
+        } else {
+          globalId = 61; // 默认值
+          // 如果nextGlobalId是数字类型，递增它
+          if (typeof nextGlobalId === 'number') {
+            nextGlobalId++;
+          }
+        }
         const newCard = createNewCard(globalId, zoneId);
         
         // 添加新卡牌到cards数组
-        cards.value.push(newCard);
+        if (cards && typeof cards.push === 'function') {
+          cards.push(newCard);
+        } else if (cards && cards.value && typeof cards.value.push === 'function') {
+          cards.value.push(newCard);
+        }
       }
       
       // 将卡牌放回表头（清除to属性）
