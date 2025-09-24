@@ -1,6 +1,14 @@
 <template>
   <div id="app">
     <h1>卡牌游戏 - 表格布局</h1>
+    <!-- 调试信息：显示当前全局ID -->
+    <div class="debug-info" v-if="showDebug">
+      当前全局ID: {{ nextGlobalIdValue }}
+      <button @click="showDebug = !showDebug">隐藏调试信息</button>
+    </div>
+    <div class="debug-toggle" v-else>
+      <button @click="showDebug = !showDebug">显示调试信息</button>
+    </div>
     
     <!-- 顶部控制区域 -->
     <div class="top-controls">
@@ -76,6 +84,7 @@ import CardDot from './components/CardDot.vue'
 import CardModal from './components/CardModal.vue'
 import TableHeader from './components/table/TableHeader.vue'
 import TableRow from './components/table/TableRow.vue'
+import { ref, computed } from 'vue';
 import { useDragAndDrop } from './composables/useDragAndDrop.js'
 import { useGameLogic } from './composables/useGameLogic.js'
 import { useCardOperations } from './composables/useCardOperations.js'
@@ -143,6 +152,12 @@ export default {
       }
     }
     
+    // 调试相关
+    const showDebug = ref(false);
+    const nextGlobalIdValue = computed(() => {
+      return nextGlobalId.value;
+    });
+    
     return {
       // 数据属性
       players,
@@ -157,6 +172,7 @@ export default {
       
       // 计算属性
       draggingCardStyle,
+      nextGlobalIdValue,
       
       // 方法
       isDragging,
@@ -176,7 +192,10 @@ export default {
       toggleCardDisguise,
       toggleCardVisibility,
       setDisguiseColor,
-      handleKeydown
+      handleKeydown,
+      
+      // 调试相关
+      showDebug
     }
   },
   mounted() {
@@ -200,6 +219,18 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin: 20px;
+}
+
+.debug-info {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-family: monospace;
+}
+
+.debug-toggle {
+  margin-bottom: 10px;
 }
 
 .game-controls {

@@ -83,6 +83,18 @@ export function useGameLogic() {
     cards.value = generateInitialCards();
   };
   
+  // 获取当前全局ID值
+  const getCurrentGlobalId = () => {
+    return nextGlobalId.value;
+  };
+  
+  // 手动更新全局ID值
+  const updateGlobalId = (newValue) => {
+    if (typeof newValue === 'number' && newValue > nextGlobalId.value) {
+      nextGlobalId.value = newValue;
+    }
+  };
+  
   // 获取卡牌在cards数组中的索引
   const getCardIndexComputed = (card) => {
     return getCardIndex(cards.value, card);
@@ -106,6 +118,8 @@ export function useGameLogic() {
     // 方法
     addPlayer,
     removePlayer,
-    resetGame
+    resetGame,
+    getCurrentGlobalId,
+    updateGlobalId
   };
 }

@@ -8,7 +8,7 @@
       v-for="zone in [baseZones.find(z => z.id === 'deck')]" 
       :key="`col-${zone.id}`"
       @dragover.prevent="handleDragOver"
-      @drop="handleDropToHeader(zone.id)"
+      @drop="handleDropToHeader(zone.id, cards, nextGlobalId)"
     >
       <span class="header-text">{{ zone.name }}</span>
       <!-- 显示在列标题区域的卡牌 -->
@@ -36,7 +36,7 @@
       v-for="player in players" 
       :key="`col-${player.id}`"
       @dragover.prevent="handleDragOver"
-      @drop="handleDropToHeader(player.id)"
+      @drop="handleDropToHeader(player.id, cards, nextGlobalId)"
     >
       <span class="header-text">{{ player.name }}</span>
       <!-- 显示在列标题区域的卡牌 -->
@@ -57,7 +57,7 @@
       v-for="zone in [baseZones.find(z => z.id === 'discard')]" 
       :key="`col-${zone.id}`"
       @dragover.prevent="handleDragOver"
-      @drop="handleDropToHeader(zone.id)"
+      @drop="handleDropToHeader(zone.id, cards, nextGlobalId)"
     >
       <span class="header-text">{{ zone.name }}</span>
       <!-- 显示在列标题区域的卡牌 -->

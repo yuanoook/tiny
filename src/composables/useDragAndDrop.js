@@ -78,25 +78,27 @@ export function useDragAndDrop() {
       // 只有原型空心牌才能创建新卡牌
       if (originalCard.isPrototype) {
         // 创建新卡牌
-        // 确保nextGlobalId是ref对象并正确递增
+        // 获取并递增全局ID
         let globalId;
-        if (nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.value !== undefined) {
+        if (nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.hasOwnProperty('value')) {
+          // nextGlobalId是ref对象，先获取当前值再递增
           globalId = nextGlobalId.value;
           nextGlobalId.value++;
         } else {
-          globalId = 61; // 默认值
-          // 如果nextGlobalId是数字类型，递增它
-          if (typeof nextGlobalId === 'number') {
-            nextGlobalId++;
-          }
+          // 回退到默认值
+          globalId = 61;
         }
         const newCard = createNewCard(globalId, rowZoneId, colZoneId);
         
         // 添加新卡牌到cards数组
-        if (cards && typeof cards.push === 'function') {
-          cards.push(newCard);
-        } else if (cards && cards.value && typeof cards.value.push === 'function') {
-          cards.value.push(newCard);
+        try {
+          if (cards && typeof cards.push === 'function') {
+            cards.push(newCard);
+          } else if (cards && cards.value && typeof cards.value.push === 'function') {
+            cards.value.push(newCard);
+          }
+        } catch (error) {
+          console.error('Error adding new card to cards array:', error);
         }
       }
       
@@ -122,25 +124,27 @@ export function useDragAndDrop() {
       // 只有原型空心牌才能创建新卡牌
       if (originalCard.isPrototype) {
         // 创建新卡牌
-        // 确保nextGlobalId是ref对象并正确递增
+        // 获取并递增全局ID
         let globalId;
-        if (nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.value !== undefined) {
+        if (nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.hasOwnProperty('value')) {
+          // nextGlobalId是ref对象，先获取当前值再递增
           globalId = nextGlobalId.value;
           nextGlobalId.value++;
         } else {
-          globalId = 61; // 默认值
-          // 如果nextGlobalId是数字类型，递增它
-          if (typeof nextGlobalId === 'number') {
-            nextGlobalId++;
-          }
+          // 回退到默认值
+          globalId = 61;
         }
         const newCard = createNewCard(globalId, zoneId);
         
         // 添加新卡牌到cards数组
-        if (cards && typeof cards.push === 'function') {
-          cards.push(newCard);
-        } else if (cards && cards.value && typeof cards.value.push === 'function') {
-          cards.value.push(newCard);
+        try {
+          if (cards && typeof cards.push === 'function') {
+            cards.push(newCard);
+          } else if (cards && cards.value && typeof cards.value.push === 'function') {
+            cards.value.push(newCard);
+          }
+        } catch (error) {
+          console.error('Error adding new card to cards array:', error);
         }
       }
       

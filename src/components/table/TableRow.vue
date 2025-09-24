@@ -3,7 +3,7 @@
     <div 
       class="row-header" 
       @dragover.prevent="handleDragOver"
-      @drop="handleDropToHeader(zone.id)"
+      @drop="handleDropToHeader(zone.id, cards, nextGlobalId)"
     >
       <span class="header-text">{{ zone.name }}</span>
       <!-- 显示在行标题区域的卡牌 -->
