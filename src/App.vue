@@ -5,6 +5,7 @@
     <div class="debug-info" v-if="showDebug">
       当前全局ID: {{ nextGlobalIdValue }}
       <button @click="showDebug = !showDebug">隐藏调试信息</button>
+      <button @click="testUpdateGlobalId">测试更新全局ID</button>
     </div>
     <div class="debug-toggle" v-else>
       <button @click="showDebug = !showDebug">显示调试信息</button>
@@ -84,7 +85,7 @@ import CardDot from './components/CardDot.vue'
 import CardModal from './components/CardModal.vue'
 import TableHeader from './components/table/TableHeader.vue'
 import TableRow from './components/table/TableRow.vue'
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useDragAndDrop } from './composables/useDragAndDrop.js'
 import { useGameLogic } from './composables/useGameLogic.js'
 import { useCardOperations } from './composables/useCardOperations.js'
@@ -132,7 +133,9 @@ export default {
       addPlayer,
       removePlayer,
       resetGame,
-      nextGlobalId
+      nextGlobalId,
+      getCurrentGlobalId,
+      updateGlobalId
     } = useGameLogic()
     
     // 使用卡牌操作逻辑
@@ -156,6 +159,11 @@ export default {
     const showDebug = ref(false);
     const nextGlobalIdValue = computed(() => {
       return nextGlobalId.value;
+    });
+    
+    // 监听nextGlobalId的变化
+    watch(nextGlobalId, (newVal, oldVal) => {
+      console.log('nextGlobalId changed from', oldVal, 'to', newVal);
     });
     
     return {
@@ -195,7 +203,14 @@ export default {
       handleKeydown,
       
       // 调试相关
-      showDebug
+      showDebug,
+      
+      // 测试方法
+      testUpdateGlobalId: () => {
+        const newId = getCurrentGlobalId() + 10;
+        console.log('Updating global ID to:', newId);
+        updateGlobalId(newId);
+      }
     }
   },
   mounted() {

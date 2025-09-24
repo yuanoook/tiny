@@ -83,10 +83,13 @@ export function useDragAndDrop() {
         if (nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.hasOwnProperty('value')) {
           // nextGlobalId是ref对象，先获取当前值再递增
           globalId = nextGlobalId.value;
+          console.log('Before incrementing nextGlobalId:', nextGlobalId.value);
           nextGlobalId.value++;
+          console.log('After incrementing nextGlobalId:', nextGlobalId.value);
         } else {
           // 回退到默认值
           globalId = 61;
+          console.log('Using fallback globalId:', globalId);
         }
         const newCard = createNewCard(globalId, rowZoneId, colZoneId);
         
@@ -129,10 +132,13 @@ export function useDragAndDrop() {
         if (nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.hasOwnProperty('value')) {
           // nextGlobalId是ref对象，先获取当前值再递增
           globalId = nextGlobalId.value;
+          console.log('Before incrementing nextGlobalId in header:', nextGlobalId.value);
           nextGlobalId.value++;
+          console.log('After incrementing nextGlobalId in header:', nextGlobalId.value);
         } else {
           // 回退到默认值
           globalId = 61;
+          console.log('Using fallback globalId in header:', globalId);
         }
         const newCard = createNewCard(globalId, zoneId);
         
