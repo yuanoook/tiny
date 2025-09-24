@@ -78,7 +78,7 @@ export default {
       required: true
     },
     nextGlobalId: {
-      type: Number,
+      type: Object,
       required: true
     },
     isDragging: {

@@ -78,7 +78,11 @@ export function useDragAndDrop() {
       // 只有原型空心牌才能创建新卡牌
       if (originalCard.isPrototype) {
         // 创建新卡牌
-        const newCard = createNewCard(nextGlobalId.value++, rowZoneId, colZoneId);
+        // 确保nextGlobalId是ref对象
+        const globalId = nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.value !== undefined 
+          ? nextGlobalId.value++ 
+          : (typeof nextGlobalId === 'number' ? nextGlobalId++ : 61);
+        const newCard = createNewCard(globalId, rowZoneId, colZoneId);
         
         // 添加新卡牌到cards数组
         cards.value.push(newCard);
@@ -106,7 +110,11 @@ export function useDragAndDrop() {
       // 只有原型空心牌才能创建新卡牌
       if (originalCard.isPrototype) {
         // 创建新卡牌
-        const newCard = createNewCard(nextGlobalId.value++, zoneId);
+        // 确保nextGlobalId是ref对象
+        const globalId = nextGlobalId && typeof nextGlobalId === 'object' && nextGlobalId.value !== undefined 
+          ? nextGlobalId.value++ 
+          : (typeof nextGlobalId === 'number' ? nextGlobalId++ : 61);
+        const newCard = createNewCard(globalId, zoneId);
         
         // 添加新卡牌到cards数组
         cards.value.push(newCard);

@@ -142,7 +142,7 @@ export default {
         // 只有原型空心牌才能创建新卡牌
         if (originalCard.isPrototype) {
           // 创建新卡牌
-          const newCard = createNewCard(nextGlobalId++, rowZoneId, colZoneId);
+          const newCard = createNewCard(nextGlobalId.value++, rowZoneId, colZoneId);
           
           // 添加新卡牌到cards数组
           cards.push(newCard);
@@ -173,7 +173,7 @@ export default {
         // 只有原型空心牌才能创建新卡牌
         if (originalCard.isPrototype) {
           // 创建新卡牌
-          const newCard = createNewCard(nextGlobalId++, zoneId);
+          const newCard = createNewCard(nextGlobalId.value++, zoneId);
           
           // 添加新卡牌到cards数组
           cards.push(newCard);
