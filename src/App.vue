@@ -30,7 +30,7 @@
         :handle-drag-start="handleDragStart"
         :handle-drag-end="handleDragEnd"
         :handle-drag-over="handleDragOver"
-        :handle-drop-to-header="handleDropToHeader"
+        :handle-drop-to-header="(zoneId) => handleDropToHeader(zoneId, cards, nextGlobalId)"
         :toggle-card-disguise="toggleCardDisguise"
       />
       
@@ -43,8 +43,8 @@
         :handle-drag-start="handleDragStart"
         :handle-drag-end="handleDragEnd"
         :handle-drag-over="handleDragOver"
-        :handle-drop="handleDrop"
-        :handle-drop-to-header="handleDropToHeader"
+        :handle-drop="(rowZoneId, colZoneId) => handleDrop(rowZoneId, colZoneId, cards, nextGlobalId)"
+        :handle-drop-to-header="(zoneId) => handleDropToHeader(zoneId, cards, nextGlobalId)"
         :toggle-card-disguise="toggleCardDisguise"
       />
     </div>
@@ -77,7 +77,7 @@ import TableRow from './components/table/TableRow.vue'
 import { useDragAndDrop } from './composables/useDragAndDrop.js'
 import { useGameLogic } from './composables/useGameLogic.js'
 import { useCardOperations } from './composables/useCardOperations.js'
-import { moveCardToZone } from './gameState.js'
+import { moveCardToZone, createNewCard } from './gameState.js'
 
 export default {
   name: 'App',
@@ -91,6 +91,7 @@ export default {
     // 使用拖拽逻辑
     const {
       draggingCard,
+      originalDraggingCard,
       dragImage,
       draggingCardStyle,
       isDragging,
@@ -125,11 +126,27 @@ export default {
     } = useCardOperations()
     
     // 处理放置事件
-    const handleDrop = (rowZoneId, colZoneId) => {
+    const handleDrop = (rowZoneId, colZoneId, cards, nextGlobalId) => {
       if (draggingCard.value) {
-        // 移动卡牌到目标区域
-        cards.value = moveCardToZone(cards.value, draggingCard.value.id, rowZoneId, colZoneId)
-        draggingCard.value = null
+        // 保存原始拖拽卡牌的引用
+        const originalCard = originalDraggingCard.value || draggingCard.value;
+        
+        // 只有原型空心牌才能创建新卡牌
+        if (originalCard.isPrototype) {
+          // 创建新卡牌
+          const newCard = createNewCard(nextGlobalId.value++, rowZoneId, colZoneId);
+          
+          // 添加新卡牌到cards数组
+          cards.value.push(newCard);
+        }
+        
+        // 设置卡牌的目标区域
+        draggingCard.value.to = colZoneId;
+        draggingCard.value.owner = rowZoneId;
+        
+        // 重置拖拽状态
+        draggingCard.value = null;
+        originalDraggingCard.value = null;
         
         // 移除拖拽图像
         if (dragImage.value) {
@@ -140,11 +157,27 @@ export default {
     }
     
     // 处理放置到标题事件
-    const handleDropToHeader = (zoneId) => {
+    const handleDropToHeader = (zoneId, cards, nextGlobalId) => {
       if (draggingCard.value) {
-        // 移动卡牌到目标区域（行或列的标题区域）
-        cards.value = moveCardToZone(cards.value, draggingCard.value.id, zoneId, zoneId)
-        draggingCard.value = null
+        // 保存原始拖拽卡牌的引用
+        const originalCard = originalDraggingCard.value || draggingCard.value;
+        
+        // 只有原型空心牌才能创建新卡牌
+        if (originalCard.isPrototype) {
+          // 创建新卡牌
+          const newCard = createNewCard(nextGlobalId.value++, zoneId);
+          
+          // 添加新卡牌到cards数组
+          cards.value.push(newCard);
+        }
+        
+        // 将卡牌放回表头（清除to属性）
+        draggingCard.value.to = null;
+        draggingCard.value.owner = zoneId;
+        
+        // 重置拖拽状态
+        draggingCard.value = null;
+        originalDraggingCard.value = null;
         
         // 移除拖拽图像
         if (dragImage.value) {

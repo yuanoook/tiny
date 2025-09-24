@@ -7,6 +7,7 @@ export function useDragAndDrop() {
   // 拖拽状态
   const draggingCard = ref(null);
   const originalDraggingCard = ref(null);
+  const dragImage = ref(null);
   const dragOffsetX = ref(0);
   const dragOffsetY = ref(0);
   const dragX = ref(0);
@@ -14,6 +15,7 @@ export function useDragAndDrop() {
 
   // 处理拖拽开始
   const handleDragStart = (card, event) => {
+    console.log(card, event)
     // 如果是原型空心牌，则创建一个新的卡牌实例
     if (card.isPrototype) {
       // 创建新卡牌，继承原始卡牌的部分属性
@@ -143,6 +145,7 @@ export function useDragAndDrop() {
     // 状态
     draggingCard,
     originalDraggingCard,
+    dragImage,
     dragOffsetX,
     dragOffsetY,
     dragX,
