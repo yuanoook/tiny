@@ -1,6 +1,6 @@
 // useDragAndDrop.js - 拖拽相关的可组合函数
 
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { createNewCard } from '../gameState.js';
 
 export function useDragAndDrop() {
@@ -126,6 +126,18 @@ export function useDragAndDrop() {
     }
   };
 
+    // 计算拖拽卡牌的样式
+  const draggingCardStyle = computed(() => {
+    if (!draggingCard.value) return {};
+    return {
+      position: 'fixed',
+      left: `${dragX.value}px`,
+      top: `${dragY.value}px`,
+      pointerEvents: 'none',
+      zIndex: 1000
+    };
+  });
+
   // 判断卡牌是否正在被拖拽
   const isDragging = (card) => {
     // 如果有正在拖拽的卡牌，直接比较ID
@@ -150,6 +162,7 @@ export function useDragAndDrop() {
     dragOffsetY,
     dragX,
     dragY,
+    draggingCardStyle,
     
     // 方法
     handleDragStart,
