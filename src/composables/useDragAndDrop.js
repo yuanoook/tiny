@@ -71,6 +71,9 @@ export function useDragAndDrop() {
 
   // 处理放置到单元格
   const handleDrop = (rowZoneId, colZoneId, cards, nextGlobalId) => {
+    // 阻止默认行为
+    event.preventDefault();
+    
     if (draggingCard.value) {
       // 保存原始拖拽卡牌的引用
       const originalCard = originalDraggingCard.value || draggingCard.value;
@@ -94,15 +97,7 @@ export function useDragAndDrop() {
         const newCard = createNewCard(globalId, rowZoneId, colZoneId);
         
         // 添加新卡牌到cards数组
-        try {
-          if (cards && typeof cards.push === 'function') {
-            cards.push(newCard);
-          } else if (cards && cards.value && typeof cards.value.push === 'function') {
-            cards.value.push(newCard);
-          }
-        } catch (error) {
-          console.error('Error adding new card to cards array:', error);
-        }
+        cards.push(newCard);
       }
       
       // 设置卡牌的目标区域
@@ -120,6 +115,9 @@ export function useDragAndDrop() {
 
   // 处理放置到表头
   const handleDropToHeader = (zoneId, cards, nextGlobalId) => {
+    // 阻止默认行为
+    event.preventDefault();
+    
     if (draggingCard.value) {
       // 保存原始拖拽卡牌的引用
       const originalCard = originalDraggingCard.value || draggingCard.value;
@@ -143,15 +141,7 @@ export function useDragAndDrop() {
         const newCard = createNewCard(globalId, zoneId);
         
         // 添加新卡牌到cards数组
-        try {
-          if (cards && typeof cards.push === 'function') {
-            cards.push(newCard);
-          } else if (cards && cards.value && typeof cards.value.push === 'function') {
-            cards.value.push(newCard);
-          }
-        } catch (error) {
-          console.error('Error adding new card to cards array:', error);
-        }
+        cards.push(newCard);
       }
       
       // 将卡牌放回表头（清除to属性）

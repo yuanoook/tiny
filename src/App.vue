@@ -40,7 +40,7 @@
         :handle-drag-start="handleDragStart"
         :handle-drag-end="handleDragEnd"
         :handle-drag-over="handleDragOver"
-        :handle-drop-to-header="(zoneId) => handleDropToHeader(zoneId, cards, nextGlobalId)"
+        :handle-drop-to-header="handleDropToHeader"
         :toggle-card-disguise="toggleCardDisguise"
       />
       
@@ -54,8 +54,8 @@
         :handle-drag-start="handleDragStart"
         :handle-drag-end="handleDragEnd"
         :handle-drag-over="handleDragOver"
-        :handle-drop="(rowZoneId, colZoneId) => handleDrop(rowZoneId, colZoneId, cards, nextGlobalId)"
-        :handle-drop-to-header="(zoneId) => handleDropToHeader(zoneId, cards, nextGlobalId)"
+        :handle-drop="handleDrop"
+        :handle-drop-to-header="handleDropToHeader"
         :toggle-card-disguise="toggleCardDisguise"
       />
     </div>

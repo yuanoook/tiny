@@ -74,7 +74,7 @@ export default {
       required: true
     },
     cards: {
-      type: Object,
+      type: Array,
       required: true
     },
     nextGlobalId: {
