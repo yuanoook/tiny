@@ -9,18 +9,31 @@ const initPlayers = () => {
 };
 
 // 生成初始卡牌数据
-const initCards = (players) => {
-  return players.flatMap(player => 
-    Array(5).fill(null).map((_, i) => ({
-      id: `card-${player}-${i + 1}`,
-      color: 'blue',
-      isEmpty: false,
-      isPrototype: false,
+const initCards = () => {
+  const colors = ['red', 'yellow', 'green'];
+  const cards = [];
+  
+  // 生成60张卡牌，每种颜色各20张
+  for (let i = 0; i < 60; i++) {
+    const colorIndex = Math.floor(i / 20); // 每20张为一种颜色
+    const color = colors[colorIndex];
+    cards.push({
+      id: i + 1,
       cardNo: i + 1,
-      owner: player,
-      to: null
-    }))
-  );
+      color: color,
+      owner: 'deck', // 所有卡牌初始时都在新牌堆
+      visibility: 'hidden',
+      updateTime: Date.now() // 添加更新时间字段
+    });
+  }
+  
+  // Fisher-Yates 洗牌算法，将卡牌随机打散
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+  
+  return cards;
 };
 
 // 为玩家生成空卡牌

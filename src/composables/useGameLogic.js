@@ -25,7 +25,7 @@ export function useGameLogic() {
   ]);
   
   // 生成初始卡牌数据
-  let initialCards = initCards(players.value);
+  let initialCards = initCards();
   
   // 为每个玩家生成一张empty卡牌，并标记为第一个空心牌
   initialCards = addEmptyCardsForPlayers(players.value, initialCards);
@@ -80,7 +80,7 @@ export function useGameLogic() {
   // 重置游戏
   const resetGame = () => {
     // 重新生成初始卡牌
-    cards.value = initCards(players.value);
+    cards.value = initCards();
   };
   
   // 获取新卡牌编号
