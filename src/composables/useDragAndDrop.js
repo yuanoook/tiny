@@ -70,7 +70,7 @@ export function useDragAndDrop() {
   };
 
   // 处理放置到单元格
-  const handleDrop = (rowZoneId, colZoneId, cards, nextGlobalId) => {
+  const handleDrop = (rowZoneId, colZoneId, cards) => {
     // 阻止默认行为
     event.preventDefault();
     
@@ -104,7 +104,7 @@ export function useDragAndDrop() {
   };
 
   // 处理放置到表头
-  const handleDropToHeader = (zoneId, cards, nextGlobalId) => {
+  const handleDropToHeader = (zoneId, cards) => {
     // 阻止默认行为
     event.preventDefault();
     

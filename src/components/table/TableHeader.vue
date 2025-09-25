@@ -4,12 +4,12 @@
     </div>
     <!-- 新牌堆列 -->
     <div 
-      class="col-header" 
-      v-for="zone in [baseZones.find(z => z.id === 'deck')]" 
-      :key="`col-${zone.id}`"
-      @dragover.prevent="handleDragOver"
-      @drop="handleDropToHeader(zone.id, cards, nextGlobalId)"
-    >
+        class="col-header" 
+        v-for="zone in [baseZones.find(z => z.id === 'deck')]" 
+        :key="`col-${zone.id}`"
+        @dragover.prevent="handleDragOver"
+        @drop="handleDropToHeader(zone.id, cards)"
+      >
       <span class="header-text">{{ zone.name }}</span>
       <!-- 显示在列标题区域的卡牌 -->
       <CardDot
@@ -32,12 +32,12 @@
     </div>
     <!-- 玩家区域列 -->
     <div 
-      class="col-header" 
-      v-for="player in players" 
-      :key="`col-${player.id}`"
-      @dragover.prevent="handleDragOver"
-      @drop="handleDropToHeader(player.id, cards, nextGlobalId)"
-    >
+        class="col-header" 
+        v-for="player in players" 
+        :key="`col-${player.id}`"
+        @dragover.prevent="handleDragOver"
+        @drop="handleDropToHeader(player.id, cards)"
+      >
       <span class="header-text">{{ player.name }}</span>
       <!-- 显示在列标题区域的卡牌 -->
       <CardDot
@@ -53,12 +53,12 @@
     </div>
     <!-- 弃牌堆列 -->
     <div 
-      class="col-header" 
-      v-for="zone in [baseZones.find(z => z.id === 'discard')]" 
-      :key="`col-${zone.id}`"
-      @dragover.prevent="handleDragOver"
-      @drop="handleDropToHeader(zone.id, cards, nextGlobalId)"
-    >
+        class="col-header" 
+        v-for="zone in [baseZones.find(z => z.id === 'discard')]" 
+        :key="`col-${zone.id}`"
+        @dragover.prevent="handleDragOver"
+        @drop="handleDropToHeader(zone.id, cards)"
+      >
       <span class="header-text">{{ zone.name }}</span>
       <!-- 显示在列标题区域的卡牌 -->
       <CardDot
@@ -102,10 +102,6 @@ export default {
     },
     cards: {
       type: Array,
-      required: true
-    },
-    nextGlobalId: {
-      type: Object,
       required: true
     },
     isDragging: {

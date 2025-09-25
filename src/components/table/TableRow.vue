@@ -3,7 +3,7 @@
     <div 
       class="row-header" 
       @dragover.prevent="handleDragOver"
-      @drop="handleDropToHeader(zone.id, cards, nextGlobalId)"
+      @drop="handleDropToHeader(zone.id, cards)"
     >
       <span class="header-text">{{ zone.name }}</span>
       <!-- 显示在行标题区域的卡牌 -->
@@ -32,7 +32,7 @@
       :key="`${zone.id}-${colZone.id}`"
       :class="[`cell-${zone.id}-${colZone.id}`, { 'center-zone': isCenterZone(zone.id, colZone.id), 'deck-cell': zone.id === 'deck', 'discard-cell': zone.id === 'discard' }]"
       @dragover.prevent="handleDragOver"
-      @drop="handleDrop(zone.id, colZone.id, cards, nextGlobalId)"
+      @drop="handleDrop(zone.id, colZone.id, cards)"
     >
       <!-- 显示该区域的卡牌 -->
       <CardDot
@@ -75,10 +75,6 @@ export default {
     },
     cards: {
       type: Array,
-      required: true
-    },
-    nextGlobalId: {
-      type: Object,
       required: true
     },
     isDragging: {

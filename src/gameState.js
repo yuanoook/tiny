@@ -168,6 +168,14 @@ const createPrototypeEmptyCard = (owner) => {
   };
 };
 
+// 获取当前全局ID值
+// 注意：这个方法应该在实际使用中从useGameLogic中获取当前ID值
+// 这里提供一个默认实现，返回当前时间戳作为临时ID
+let currentGlobalId = 61; // 初始值与useGameLogic中的nextGlobalId一致
+const getCurrentGlobalId = () => {
+  return currentGlobalId++;
+};
+
 // 移动卡牌到指定区域
 const moveCardToZone = (cards, cardId, rowZoneId, colZoneId = null) => {
   return cards.map(card => {
@@ -197,5 +205,6 @@ export {
   handleRemovePlayerCards,
   createNewCard,
   createPrototypeEmptyCard,
-  moveCardToZone
+  moveCardToZone,
+  getCurrentGlobalId
 };
