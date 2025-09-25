@@ -1,6 +1,7 @@
 // useCardOperations.js - 卡片操作相关的可组合函数
 
 import { ref } from 'vue';
+import { recordCardChange } from '../utils/cardHistory.js';
 
 export function useCardOperations() {
   // 弹窗状态
@@ -16,6 +17,9 @@ export function useCardOperations() {
   // 切换卡牌明暗状态
   const toggleCardVisibility = () => {
     if (currentCard.value) {
+      // 记录变更前的状态
+      const previousState = { ...currentCard.value };
+      
       // 切换卡牌的可见性
       if (currentCard.value.visibility === 'hidden') {
         // 如果是暗牌，变为明牌
@@ -34,6 +38,21 @@ export function useCardOperations() {
           delete currentCard.value.disguiseColor;
         }
       }
+      
+      // 记录变更历史
+      const changes = {};
+      if (previousState.visibility !== currentCard.value.visibility) {
+        changes.visibility = currentCard.value.visibility;
+      }
+      if (previousState.isDisguised !== currentCard.value.isDisguised) {
+        changes.isDisguised = currentCard.value.isDisguised;
+      }
+      if (previousState.disguiseColor !== currentCard.value.disguiseColor) {
+        changes.disguiseColor = currentCard.value.disguiseColor;
+      }
+      
+      recordCardChange(currentCard.value, 'toggleVisibility', changes);
+      
       showCardModal.value = false;
     }
   };
@@ -41,6 +60,9 @@ export function useCardOperations() {
   // 设置卡牌伪装颜色
   const setDisguiseColor = (color) => {
     if (currentCard.value) {
+      // 记录变更前的状态
+      const previousState = { ...currentCard.value };
+      
       // 如果是empty卡牌且还没有设置伪装颜色，则设置伪装颜色
       if (currentCard.value.isEmpty && !currentCard.value.disguiseColor) {
         currentCard.value.disguiseColor = color;
@@ -59,6 +81,21 @@ export function useCardOperations() {
           currentCard.value.visibility = 'hidden';
         }
       }
+      
+      // 记录变更历史
+      const changes = {};
+      if (previousState.isDisguised !== currentCard.value.isDisguised) {
+        changes.isDisguised = currentCard.value.isDisguised;
+      }
+      if (previousState.disguiseColor !== currentCard.value.disguiseColor) {
+        changes.disguiseColor = currentCard.value.disguiseColor;
+      }
+      if (previousState.visibility !== currentCard.value.visibility) {
+        changes.visibility = currentCard.value.visibility;
+      }
+      
+      recordCardChange(currentCard.value, 'setDisguiseColor', changes);
+      
       showCardModal.value = false;
     }
   };

@@ -80,6 +80,10 @@ export function useGameLogic() {
       disguiseColor: null,
       updateTime: Date.now()
     };
+    
+    // 添加历史记录
+    prototypeCard.history = initCardHistory(prototypeCard);
+    
     cards.value.push(prototypeCard);
   };
   
@@ -88,22 +92,8 @@ export function useGameLogic() {
     if (players.value.length > 2) {
       players.value = players.value.filter(player => player.id !== playerId);
       
-      // 将该玩家的非原型卡牌移至弃牌堆，同时移除原型卡牌
-      cards.value = cards.value.filter(card => {
-        // 移除该玩家的原型卡牌
-        if (card.owner === playerId && card.isPrototype) {
-          return false;
-        }
-        // 将该玩家的其他卡牌移至弃牌堆
-        if (card.owner === playerId) {
-          return { ...card, owner: 'discard' };
-        }
-        // 移除指向该玩家的卡牌的目标属性
-        if (card.to === playerId) {
-          return { ...card, to: null };
-        }
-        return card;
-      });
+      // 使用handleRemovePlayerCards处理卡牌
+      cards.value = handleRemovePlayerCards(cards.value, playerId);
     }
   };
   

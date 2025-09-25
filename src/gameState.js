@@ -1,5 +1,7 @@
 // gameState.js - 游戏状态管理模块
 
+import { initCardHistory, recordCardChange } from './utils/cardHistory.js';
+
 // 初始化玩家列表
 const initPlayers = () => {
   return [
@@ -17,14 +19,19 @@ const initCards = () => {
   for (let i = 0; i < 60; i++) {
     const colorIndex = Math.floor(i / 20); // 每20张为一种颜色
     const color = colors[colorIndex];
-    cards.push({
+    const card = {
       id: i + 1,
       cardNo: i + 1,
       color: color,
       owner: 'deck', // 所有卡牌初始时都在新牌堆
       visibility: 'hidden',
       updateTime: Date.now() // 添加更新时间字段
-    });
+    };
+    
+    // 添加历史记录
+    card.history = initCardHistory(card);
+    
+    cards.push(card);
   }
   
   // Fisher-Yates 洗牌算法，将卡牌随机打散
@@ -40,7 +47,7 @@ const initCards = () => {
 const addEmptyCardsForPlayers = (players, cards) => {
   // 为每个玩家生成一张empty卡牌，并标记为第一个空心牌
   players.forEach((player, index) => {
-    cards.push({
+    const card = {
       id: `empty-${player.id}`,
       cardNo: null, // 初始时没有卡牌编号
       color: 'empty',
@@ -51,7 +58,12 @@ const addEmptyCardsForPlayers = (players, cards) => {
       isDisguised: true, // 默认是伪装牌
       disguiseColor: null, // 初始伪装颜色为空
       updateTime: Date.now() // 添加更新时间字段
-    });
+    };
+    
+    // 添加历史记录
+    card.history = initCardHistory(card);
+    
+    cards.push(card);
   });
   
   return cards;
@@ -126,10 +138,36 @@ const isCenterZone = (rowZoneId, colZoneId) => {
 const handleRemovePlayerCards = (cards, playerId) => {
   return cards.map(card => {
     if (card.owner === playerId) {
-      return { ...card, owner: 'discard' };
+      // 记录变更前的状态
+      const previousState = { ...card };
+      
+      const updatedCard = { ...card, owner: 'discard' };
+      
+      // 记录变更历史
+      const changes = {};
+      if (previousState.owner !== updatedCard.owner) {
+        changes.owner = updatedCard.owner;
+      }
+      
+      recordCardChange(updatedCard, 'removePlayer', changes);
+      
+      return updatedCard;
     }
     if (card.to === playerId) {
-      return { ...card, to: null };
+      // 记录变更前的状态
+      const previousState = { ...card };
+      
+      const updatedCard = { ...card, to: null };
+      
+      // 记录变更历史
+      const changes = {};
+      if (previousState.to !== updatedCard.to) {
+        changes.to = updatedCard.to;
+      }
+      
+      recordCardChange(updatedCard, 'removePlayer', changes);
+      
+      return updatedCard;
     }
     return card;
   });
@@ -137,7 +175,7 @@ const handleRemovePlayerCards = (cards, playerId) => {
 
 // 创建新卡牌
 const createNewCard = (cardNo, owner, to = null) => {
-  return {
+  const card = {
     id: `new-${Date.now()}`,
     cardNo: cardNo,
     color: 'empty',
@@ -150,11 +188,16 @@ const createNewCard = (cardNo, owner, to = null) => {
     isPrototype: false,
     updateTime: Date.now() // 添加更新时间字段
   };
+  
+  // 添加历史记录
+  card.history = initCardHistory(card);
+  
+  return card;
 };
 
 // 创建原型空心牌
 const createPrototypeEmptyCard = (owner) => {
-  return {
+  const card = {
     id: `empty-${owner}`,
     cardNo: null,
     color: 'empty',
@@ -166,6 +209,11 @@ const createPrototypeEmptyCard = (owner) => {
     disguiseColor: null,
     updateTime: Date.now() // 添加更新时间字段
   };
+  
+  // 添加历史记录
+  card.history = initCardHistory(card);
+  
+  return card;
 };
 
 // 获取新卡牌编号
@@ -181,13 +229,30 @@ const getNewCardNo = () => {
 const moveCardToZone = (cards, cardId, rowZoneId, colZoneId = null) => {
   return cards.map(card => {
     if (card.id === cardId) {
+      // 记录变更前的状态
+      const previousState = { ...card };
+      
       // 更新卡牌的owner和to属性，并更新时间戳
-      return {
+      const updatedCard = {
         ...card,
         owner: rowZoneId,
         to: colZoneId,
         updateTime: Date.now()
       };
+      
+      // 记录变更历史
+      const changes = {};
+      if (previousState.owner !== updatedCard.owner) {
+        changes.owner = updatedCard.owner;
+      }
+      if (previousState.to !== updatedCard.to) {
+        changes.to = updatedCard.to;
+      }
+      changes.updateTime = updatedCard.updateTime;
+      
+      recordCardChange(updatedCard, 'moveCard', changes);
+      
+      return updatedCard;
     }
     return card;
   });
