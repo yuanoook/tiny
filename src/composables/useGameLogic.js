@@ -64,7 +64,23 @@ export function useGameLogic() {
   // 添加玩家
   const addPlayer = () => {
     const playerId = `player${players.value.length + 1}`;
-    players.value.push({ id: playerId, name: `玩家${players.value.length + 1}` });
+    const newPlayer = { id: playerId, name: `玩家${players.value.length + 1}` };
+    players.value.push(newPlayer);
+    
+    // 为新玩家生成原型空心牌
+    const prototypeCard = {
+      id: `empty-${playerId}`,
+      cardNo: null,
+      color: 'empty',
+      owner: playerId,
+      visibility: 'hidden',
+      isEmpty: true,
+      isPrototype: true,
+      isDisguised: true,
+      disguiseColor: null,
+      updateTime: Date.now()
+    };
+    cards.value.push(prototypeCard);
   };
   
   // 移除玩家
@@ -72,15 +88,32 @@ export function useGameLogic() {
     if (players.value.length > 2) {
       players.value = players.value.filter(player => player.id !== playerId);
       
-      // 将该玩家的卡牌移至弃牌堆
-      cards.value = handleRemovePlayerCards(cards.value, playerId);
+      // 将该玩家的非原型卡牌移至弃牌堆，同时移除原型卡牌
+      cards.value = cards.value.filter(card => {
+        // 移除该玩家的原型卡牌
+        if (card.owner === playerId && card.isPrototype) {
+          return false;
+        }
+        // 将该玩家的其他卡牌移至弃牌堆
+        if (card.owner === playerId) {
+          return { ...card, owner: 'discard' };
+        }
+        // 移除指向该玩家的卡牌的目标属性
+        if (card.to === playerId) {
+          return { ...card, to: null };
+        }
+        return card;
+      });
     }
   };
   
   // 重置游戏
   const resetGame = () => {
     // 重新生成初始卡牌
-    cards.value = initCards();
+    let resetCards = initCards();
+    // 为每个玩家重新生成空卡牌
+    resetCards = addEmptyCardsForPlayers(players.value, resetCards);
+    cards.value = resetCards;
   };
   
   // 获取新卡牌编号
