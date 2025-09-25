@@ -1,7 +1,7 @@
 // useDragAndDrop.js - 拖拽相关的可组合函数
 
 import { ref, computed } from 'vue';
-import { createNewCard, moveCardToZone, getCurrentGlobalId } from '../gameState.js';
+import { createNewCard, moveCardToZone, getNewCardNo } from '../gameState.js';
 
 export function useDragAndDrop() {
   // 拖拽状态
@@ -80,9 +80,9 @@ export function useDragAndDrop() {
       
       // 只有原型空心牌才能创建新卡牌
       if (originalCard.isPrototype) {
-        // 获取当前全局ID值
-        const globalId = getCurrentGlobalId();
-        const newCard = createNewCard(globalId, rowZoneId, colZoneId);
+        // 获取新卡牌编号
+        const cardNo = getNewCardNo();
+        const newCard = createNewCard(cardNo, rowZoneId, colZoneId);
         
         // 添加新卡牌到cards数组
         cards.push(newCard);
@@ -112,10 +112,10 @@ export function useDragAndDrop() {
       const originalCard = originalDraggingCard.value || draggingCard.value;
       
       // 只有原型空心牌才能创建新卡牌
-      if (originalCard.isPrototype) {
-        // 获取当前全局ID值
-        const globalId = getCurrentGlobalId();
-        const newCard = createNewCard(globalId, zoneId);
+    if (originalCard.isPrototype) {
+      // 获取新卡牌编号
+      const cardNo = getNewCardNo();
+      const newCard = createNewCard(cardNo, rowZoneId, colZoneId);
         
         // 添加新卡牌到cards数组
         cards.push(newCard);

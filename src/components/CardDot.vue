@@ -19,7 +19,7 @@
     @dragend="handleDragEnd"
     @dblclick="handleDoubleClick"
   >
-    <span class="card-id" v-if="!card.isEmpty || card.globalId">{{ card.globalId }}</span>
+    <span class="card-id" v-if="!card.isEmpty || card.cardNo">{{ card.cardNo }}</span>
   </div>
 </template>
 

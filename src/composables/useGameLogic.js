@@ -25,7 +25,7 @@ export function useGameLogic() {
   ]);
   
   // 生成初始卡牌数据
-  let initialCards = generateInitialCards();
+  let initialCards = generateInitialCards(players.value);
   
   // 为每个玩家生成一张empty卡牌，并标记为第一个空心牌
   initialCards = addEmptyCardsForPlayers(players.value, initialCards);
@@ -34,7 +34,7 @@ export function useGameLogic() {
   const cards = ref(initialCards);
   
   // 全局ID计数器
-  const nextGlobalId = ref(61); // 初始值设为61，与现有卡牌ID不冲突
+  const nextCardId = ref(61); // 初始值设为61，与现有卡牌ID不冲突
   
   // 所有区域（新牌堆 + 玩家区域 + 弃牌堆）
   const allZones = computed(() => {
@@ -79,19 +79,19 @@ export function useGameLogic() {
   
   // 重置游戏
   const resetGame = () => {
-    // 重新生成60张随机分布的卡牌
-    cards.value = generateInitialCards();
+    // 重新生成初始卡牌
+    cards.value = generateInitialCards(players.value);
   };
   
-  // 获取当前全局ID值
-  const getCurrentGlobalId = () => {
-    return nextGlobalId.value;
+  // 获取新卡牌编号
+  const getNewCardNo = () => {
+    return nextCardId.value;
   };
-  
-  // 手动更新全局ID值
-  const updateGlobalId = (newValue) => {
-    if (typeof newValue === 'number' && newValue > nextGlobalId.value) {
-      nextGlobalId.value = newValue;
+
+  // 更新卡牌编号
+  const updateCardId = (newValue) => {
+    if (typeof newValue === 'number' && newValue > nextCardId.value) {
+      nextCardId.value = newValue;
     }
   };
   
@@ -105,7 +105,7 @@ export function useGameLogic() {
     players,
     baseZones,
     cards,
-    nextGlobalId,
+    nextGlobalId: nextCardId,
     allZones,
     
     // 计算属性
@@ -119,7 +119,7 @@ export function useGameLogic() {
     addPlayer,
     removePlayer,
     resetGame,
-    getCurrentGlobalId,
-    updateGlobalId
+    getNewCardNo,
+    updateGlobalId: updateCardId
   };
 }

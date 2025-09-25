@@ -9,31 +9,18 @@ const initializePlayers = () => {
 };
 
 // 生成初始卡牌数据
-const generateInitialCards = () => {
-  const colors = ['red', 'yellow', 'green'];
-  const cards = [];
-  
-  // 生成60张卡牌，每种颜色各20张
-  for (let i = 0; i < 60; i++) {
-    const colorIndex = Math.floor(i / 20); // 每20张为一种颜色
-    const color = colors[colorIndex];
-    cards.push({
-      id: i + 1,
-      globalId: i + 1,
-      color: color,
-      owner: 'deck', // 所有卡牌初始时都在新牌堆
-      visibility: 'hidden',
-      updateTime: Date.now() // 添加更新时间字段
-    });
-  }
-  
-  // Fisher-Yates 洗牌算法，将卡牌随机打散
-  for (let i = cards.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [cards[i], cards[j]] = [cards[j], cards[i]];
-  }
-  
-  return cards;
+const generateInitialCards = (players) => {
+  return players.flatMap(player => 
+    Array(5).fill(null).map((_, i) => ({
+      id: `card-${player}-${i + 1}`,
+      color: 'blue',
+      isEmpty: false,
+      isPrototype: false,
+      cardNo: i + 1,
+      owner: player,
+      to: null
+    }))
+  );
 };
 
 // 为玩家生成空卡牌
@@ -42,7 +29,7 @@ const addEmptyCardsForPlayers = (players, cards) => {
   players.forEach((player, index) => {
     cards.push({
       id: `empty-${player.id}`,
-      globalId: null, // 初始时没有全局ID
+      cardNo: null, // 初始时没有卡牌编号
       color: 'empty',
       owner: player.id,
       visibility: 'hidden',
@@ -136,10 +123,10 @@ const handleRemovePlayerCards = (cards, playerId) => {
 };
 
 // 创建新卡牌
-const createNewCard = (nextGlobalId, owner, to = null) => {
+const createNewCard = (cardNo, owner, to = null) => {
   return {
     id: `new-${Date.now()}`,
-    globalId: nextGlobalId,
+    cardNo: cardNo,
     color: 'empty',
     owner: owner,
     to: to,
@@ -156,7 +143,7 @@ const createNewCard = (nextGlobalId, owner, to = null) => {
 const createPrototypeEmptyCard = (owner) => {
   return {
     id: `empty-${owner}`,
-    globalId: null,
+    cardNo: null,
     color: 'empty',
     owner: owner,
     visibility: 'hidden',
@@ -168,12 +155,13 @@ const createPrototypeEmptyCard = (owner) => {
   };
 };
 
-// 获取当前全局ID值
+// 获取新卡牌编号
 // 注意：这个方法应该在实际使用中从useGameLogic中获取当前ID值
 // 这里提供一个默认实现，返回当前时间戳作为临时ID
-let currentGlobalId = 61; // 初始值与useGameLogic中的nextGlobalId一致
-const getCurrentGlobalId = () => {
-  return currentGlobalId++;
+let nextCardNo = 61; // 初始值与useGameLogic中的nextGlobalId一致
+
+const getNewCardNo = () => {
+  return nextCardNo++;
 };
 
 // 移动卡牌到指定区域
@@ -206,5 +194,5 @@ export {
   createNewCard,
   createPrototypeEmptyCard,
   moveCardToZone,
-  getCurrentGlobalId
+  getNewCardNo
 };

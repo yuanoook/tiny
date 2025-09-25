@@ -1,15 +1,6 @@
 <template>
   <div id="app">
     <h1>卡牌游戏 - 表格布局</h1>
-    <!-- 调试信息：显示当前全局ID -->
-    <div class="debug-info" v-if="showDebug">
-      当前全局ID: {{ nextGlobalIdValue }}
-      <button @click="showDebug = !showDebug">隐藏调试信息</button>
-      <button @click="testUpdateGlobalId">测试更新全局ID</button>
-    </div>
-    <div class="debug-toggle" v-else>
-      <button @click="showDebug = !showDebug">显示调试信息</button>
-    </div>
     
     <!-- 顶部控制区域 -->
     <div class="top-controls">
@@ -153,17 +144,6 @@ export default {
       }
     }
     
-    // 调试相关
-    const showDebug = ref(false);
-    const nextGlobalIdValue = computed(() => {
-      return nextGlobalId.value;
-    });
-    
-    // 监听nextGlobalId的变化
-    watch(nextGlobalId, (newVal, oldVal) => {
-      console.log('nextGlobalId changed from', oldVal, 'to', newVal);
-    });
-    
     return {
       // 数据属性
       players,
@@ -174,11 +154,9 @@ export default {
       showCardModal,
       currentCard,
       dragImage,
-      nextGlobalId,
       
       // 计算属性
       draggingCardStyle,
-      nextGlobalIdValue,
       
       // 方法
       isDragging,
@@ -198,17 +176,7 @@ export default {
       toggleCardDisguise,
       toggleCardVisibility,
       setDisguiseColor,
-      handleKeydown,
-      
-      // 调试相关
-      showDebug,
-      
-      // 测试方法
-      testUpdateGlobalId: () => {
-        const newId = getCurrentGlobalId() + 10;
-        console.log('Updating global ID to:', newId);
-        updateGlobalId(newId);
-      }
+      handleKeydown
     }
   },
   mounted() {
@@ -232,18 +200,6 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin: 20px;
-}
-
-.debug-info {
-  background-color: #f0f0f0;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  font-family: monospace;
-}
-
-.debug-toggle {
-  margin-bottom: 10px;
 }
 
 .game-controls {
