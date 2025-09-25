@@ -112,10 +112,10 @@ export function useDragAndDrop() {
       const originalCard = originalDraggingCard.value || draggingCard.value;
       
       // 只有原型空心牌才能创建新卡牌
-    if (originalCard.isPrototype) {
-      // 获取新卡牌编号
-      const cardNo = getNewCardNo();
-      const newCard = createNewCard(cardNo, rowZoneId, colZoneId);
+      if (originalCard.isPrototype) {
+        // 获取新卡牌编号
+        const cardNo = getNewCardNo();
+        const newCard = createNewCard(cardNo, zoneId);
         
         // 添加新卡牌到cards数组
         cards.push(newCard);
