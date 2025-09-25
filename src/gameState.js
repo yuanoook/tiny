@@ -1,7 +1,7 @@
 // gameState.js - 游戏状态管理模块
 
 // 初始化玩家列表
-const initializePlayers = () => {
+const initPlayers = () => {
   return [
     { id: 'player1', name: '玩家1' },
     { id: 'player2', name: '玩家2' }
@@ -9,7 +9,7 @@ const initializePlayers = () => {
 };
 
 // 生成初始卡牌数据
-const generateInitialCards = (players) => {
+const initCards = (players) => {
   return players.flatMap(player => 
     Array(5).fill(null).map((_, i) => ({
       id: `card-${player}-${i + 1}`,
@@ -181,8 +181,8 @@ const moveCardToZone = (cards, cardId, rowZoneId, colZoneId = null) => {
 };
 
 export {
-  initializePlayers,
-  generateInitialCards,
+  initPlayers,
+  initCards,
   addEmptyCardsForPlayers,
   getAllZones,
   getCardsInColumnHeader,

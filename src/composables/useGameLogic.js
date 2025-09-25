@@ -2,8 +2,8 @@
 
 import { ref, computed } from 'vue';
 import { 
-  initializePlayers, 
-  generateInitialCards, 
+  initPlayers, 
+  initCards, 
   addEmptyCardsForPlayers,
   getAllZones,
   getCardsInColumnHeader,
@@ -16,7 +16,7 @@ import {
 
 export function useGameLogic() {
   // 初始化玩家列表
-  const players = ref(initializePlayers());
+  const players = ref(initPlayers());
   
   // 基础区域
   const baseZones = ref([
@@ -25,7 +25,7 @@ export function useGameLogic() {
   ]);
   
   // 生成初始卡牌数据
-  let initialCards = generateInitialCards(players.value);
+  let initialCards = initCards(players.value);
   
   // 为每个玩家生成一张empty卡牌，并标记为第一个空心牌
   initialCards = addEmptyCardsForPlayers(players.value, initialCards);
@@ -80,7 +80,7 @@ export function useGameLogic() {
   // 重置游戏
   const resetGame = () => {
     // 重新生成初始卡牌
-    cards.value = generateInitialCards(players.value);
+    cards.value = initCards(players.value);
   };
   
   // 获取新卡牌编号
