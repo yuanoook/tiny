@@ -32,6 +32,13 @@ export function useDragAndDrop() {
         disguiseColor: card.disguiseColor || null
       };
       
+      // 如果原型卡牌设置了伪装，确保新卡牌也保持伪装状态
+      if (card.isDisguised && card.disguiseColor) {
+        newCard.isDisguised = true;
+        newCard.disguiseColor = card.disguiseColor;
+        newCard.color = card.disguiseColor;
+      }
+      
       originalDraggingCard.value = card; // 保存原始卡牌引用
       draggingCard.value = newCard; // 设置拖拽中的卡牌
     } else {
@@ -84,6 +91,13 @@ export function useDragAndDrop() {
         const cardNo = getNewCardNo();
         const newCard = createNewCard(cardNo, rowZoneId, colZoneId);
         
+        // 如果原型卡牌设置了伪装，确保新卡牌也保持伪装状态
+        if (originalCard.isDisguised && originalCard.disguiseColor) {
+          newCard.isDisguised = true;
+          newCard.disguiseColor = originalCard.disguiseColor;
+          newCard.color = originalCard.disguiseColor;
+        }
+        
         // 添加新卡牌到cards数组
         cards.push(newCard);
       } else {
@@ -116,6 +130,13 @@ export function useDragAndDrop() {
         // 获取新卡牌编号
         const cardNo = getNewCardNo();
         const newCard = createNewCard(cardNo, zoneId);
+        
+        // 如果原型卡牌设置了伪装，确保新卡牌也保持伪装状态
+        if (originalCard.isDisguised && originalCard.disguiseColor) {
+          newCard.isDisguised = true;
+          newCard.disguiseColor = originalCard.disguiseColor;
+          newCard.color = originalCard.disguiseColor;
+        }
         
         // 添加新卡牌到cards数组
         cards.push(newCard);
