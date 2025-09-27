@@ -11,8 +11,10 @@ import {
   getCardsInCell,
   getCardIndex,
   isCenterZone,
-  handleRemovePlayerCards
+  handleRemovePlayerCards,
+  moveCardToZone
 } from '../gameState.js';
+import { initGameManager, moveCard, recordGlobalHistory, printHistory } from '../gameManager.js';
 
 export function useGameLogic() {
   // 初始化玩家列表
@@ -29,6 +31,9 @@ export function useGameLogic() {
   
   // 为每个玩家生成一张empty卡牌，并标记为第一个空心牌
   initialCards = addEmptyCardsForPlayers(players.value, initialCards);
+  
+  // 初始化游戏管理器
+  initGameManager(initialCards, players.value);
   
   // 卡牌数据
   const cards = ref(initialCards);
@@ -123,6 +128,27 @@ export function useGameLogic() {
     return getCardIndex(cards.value, card);
   };
   
+  // 移动卡牌（使用游戏管理器跟踪历史）
+  const moveCardWithHistory = (cardId, fromZone, toZone, additionalDetails = {}) => {
+    // 使用游戏管理器移动卡牌
+    const updatedCard = moveCard(cardId, fromZone, toZone, additionalDetails);
+    
+    if (updatedCard) {
+      // 更新本地卡牌状态以保持同步
+      const cardIndex = cards.value.findIndex(card => card.id === cardId);
+      if (cardIndex !== -1) {
+        cards.value[cardIndex] = { ...updatedCard };
+      }
+    }
+    
+    return updatedCard;
+  };
+  
+  // 打印历史记录
+  const printGameHistory = () => {
+    printHistory();
+  };
+  
   return {
     // 状态
     players,
@@ -143,6 +169,8 @@ export function useGameLogic() {
     removePlayer,
     resetGame,
     getNewCardNo,
-    updateGlobalId: updateCardId
+    updateGlobalId: updateCardId,
+    moveCard: moveCardWithHistory,
+    printHistory: printGameHistory
   };
 }

@@ -2,6 +2,7 @@
 
 import { ref, computed } from 'vue';
 import { createNewCard, moveCardToZone, getNewCardNo } from '../gameState.js';
+import { moveCard, recordGlobalHistory } from '../gameManager.js';
 
 export function useDragAndDrop() {
   // 拖拽状态
@@ -100,11 +101,19 @@ export function useDragAndDrop() {
         
         // 添加新卡牌到cards数组
         cards.push(newCard);
+        
+        // 记录全局历史
+        recordGlobalHistory('createCard', {
+          cardId: newCard.id,
+          cardNo: cardNo,
+          owner: rowZoneId,
+          to: colZoneId
+        });
       } else {
-        // 对于非原型卡牌，使用moveCardToZone函数更新位置和updateTime
-        const updatedCards = moveCardToZone(cards, draggingCard.value.id, rowZoneId, colZoneId);
-        // 更新cards数组
-        cards.splice(0, cards.length, ...updatedCards);
+        // 对于非原型卡牌，使用游戏管理器移动卡牌
+        moveCard(draggingCard.value.id, 
+          { row: draggingCard.value.owner, col: draggingCard.value.to }, 
+          { row: rowZoneId, col: colZoneId });
       }
       
       // 重置拖拽状态
@@ -140,11 +149,19 @@ export function useDragAndDrop() {
         
         // 添加新卡牌到cards数组
         cards.push(newCard);
+        
+        // 记录全局历史
+        recordGlobalHistory('createCard', {
+          cardId: newCard.id,
+          cardNo: cardNo,
+          owner: zoneId,
+          to: null
+        });
       } else {
-        // 对于非原型卡牌，使用moveCardToZone函数更新位置和updateTime
-        const updatedCards = moveCardToZone(cards, draggingCard.value.id, zoneId, null);
-        // 更新cards数组
-        cards.splice(0, cards.length, ...updatedCards);
+        // 对于非原型卡牌，使用游戏管理器移动卡牌
+        moveCard(draggingCard.value.id, 
+          { row: draggingCard.value.owner, col: draggingCard.value.to }, 
+          { row: zoneId, col: null });
       }
       
       // 重置拖拽状态

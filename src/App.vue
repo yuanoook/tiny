@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>卡牌游戏 - 表格布局</h1>
+    <!-- <h1>卡牌游戏 - 表格布局</h1> -->
     
     <!-- 顶部控制区域 -->
     <div class="top-controls">
@@ -8,6 +8,7 @@
       <div class="game-controls">
         <button @click="addPlayer">添加玩家</button>
         <button @click="resetGame">重置游戏</button>
+        <button @click="printHistory">打印历史</button>
         
         <!-- 玩家列表 -->
         <div class="players-list">
@@ -124,7 +125,9 @@ export default {
       resetGame,
       nextGlobalId,
       getCurrentGlobalId,
-      updateGlobalId
+      updateGlobalId,
+      moveCard,
+      printHistory
     } = useGameLogic()
     
     // 使用卡牌操作逻辑
@@ -176,7 +179,8 @@ export default {
       toggleCardDisguise,
       toggleCardVisibility,
       setDisguiseColor,
-      handleKeydown
+      handleKeydown,
+      printHistory
     }
   },
   mounted() {
