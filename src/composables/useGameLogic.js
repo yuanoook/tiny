@@ -15,6 +15,7 @@ import {
   moveCardToZone
 } from '../gameState.js';
 import { initGameManager, moveCard, recordGlobalHistory, printHistory } from '../gameManager.js';
+import { initCardHistory } from '../utils/cardHistory.js';
 
 export function useGameLogic() {
   // 初始化玩家列表
