@@ -53,7 +53,7 @@ const addEmptyCardsForPlayers = (players, cards) => {
       type: 'empty',
       owner: player.id,
       visibility: 'hidden',
-      isEmpty: true, // 标记为empty卡牌
+
       isPrototype: true, // 标记为首空心牌原型
       isDisguised: true, // 默认是伪装牌
       disguiseColor: null, // 初始伪装颜色为空
@@ -182,7 +182,7 @@ const createNewCard = (cardNo, owner, to = null) => {
     owner: owner,
     to: to,
     visibility: 'hidden',
-    isEmpty: true,
+
     isDisguised: false,
     disguiseColor: null,
     isPrototype: false,
@@ -203,7 +203,7 @@ const createPrototypeEmptyCard = (owner) => {
     type: 'empty',
     owner: owner,
     visibility: 'hidden',
-    isEmpty: true,
+
     isPrototype: true,
     isDisguised: true,
     disguiseColor: null,

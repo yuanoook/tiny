@@ -7,7 +7,7 @@
         'dragging': isDragging, 
         'disguised': card.isDisguised, 
         'hidden': card.visibility === 'hidden',
-        'empty': card.isEmpty && !(card.isDisguised && card.disguiseColor),
+        'empty': card.type === 'empty' && !(card.isDisguised && card.disguiseColor),
         'header-card': isHeaderCard,
         'deck-card': isDeckCard,
         'deck-header-card': isDeckHeaderCard
@@ -19,7 +19,7 @@
     @dragend="handleDragEnd"
     @dblclick="handleDoubleClick"
   >
-    <span class="card-id" v-if="!card.isEmpty || card.cardNo">{{ card.cardNo }}</span>
+    <span class="card-id" v-if="card.type !== 'empty' || card.cardNo">{{ card.cardNo }}</span>
   </div>
 </template>
 
@@ -61,12 +61,12 @@ export default {
       const classes = [];
       
       // 如果是伪装的空卡牌，显示伪装样式
-      if (this.card.isEmpty && this.card.isDisguised && this.card.disguiseColor) {
+      if (this.card.type === 'empty' && this.card.isDisguised && this.card.disguiseColor) {
         classes.push(this.card.disguiseColor);
         classes.push('disguised');
       } 
       // 如果是未伪装的空卡牌，显示空卡牌样式
-      else if (this.card.isEmpty) {
+      else if (this.card.type === 'empty') {
         classes.push('empty');
       } 
       // 如果是非空卡牌，显示正常颜色或伪装颜色

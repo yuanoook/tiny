@@ -27,7 +27,6 @@ export function useDragAndDrop(cards) {
         owner: card.owner,
         to: null,
         visibility: 'hidden',
-        isEmpty: true,
         type: card.isDisguised ? card.disguiseColor : 'empty',
         isDisguised: card.isDisguised || false,
         disguiseColor: card.disguiseColor || null

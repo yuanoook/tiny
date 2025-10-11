@@ -64,7 +64,7 @@ export function useCardOperations() {
       const previousState = { ...currentCard.value };
       
       // 如果是empty卡牌且还没有设置伪装颜色，则设置伪装颜色
-      if (currentCard.value.isEmpty && !currentCard.value.disguiseColor) {
+      if (currentCard.value.type === 'empty' && !currentCard.value.disguiseColor) {
         currentCard.value.disguiseColor = color;
         currentCard.value.isDisguised = true; // 确保设置为伪装状态
       }

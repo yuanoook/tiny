@@ -80,7 +80,7 @@ export function useGameLogic() {
       type: 'empty',
       owner: playerId,
       visibility: 'hidden',
-      isEmpty: true,
+  
       isPrototype: true,
       isDisguised: true,
       disguiseColor: null,
