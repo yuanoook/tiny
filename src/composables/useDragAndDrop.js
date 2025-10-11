@@ -28,7 +28,7 @@ export function useDragAndDrop(cards) {
         to: null,
         visibility: 'hidden',
         isEmpty: true,
-        color: card.isDisguised ? card.disguiseColor : 'empty',
+        type: card.isDisguised ? card.disguiseColor : 'empty',
         isDisguised: card.isDisguised || false,
         disguiseColor: card.disguiseColor || null
       };
@@ -37,7 +37,7 @@ export function useDragAndDrop(cards) {
       if (card.isDisguised && card.disguiseColor) {
         newCard.isDisguised = true;
         newCard.disguiseColor = card.disguiseColor;
-        newCard.color = card.disguiseColor;
+        newCard.type = card.disguiseColor;
       }
       
       originalDraggingCard.value = card; // 保存原始卡牌引用
@@ -96,7 +96,7 @@ export function useDragAndDrop(cards) {
         if (originalCard.isDisguised && originalCard.disguiseColor) {
           newCard.isDisguised = true;
           newCard.disguiseColor = originalCard.disguiseColor;
-          newCard.color = originalCard.disguiseColor;
+          newCard.type = originalCard.disguiseColor;
         }
         
         // 添加新卡牌到cards数组
@@ -152,7 +152,7 @@ export function useDragAndDrop(cards) {
         if (originalCard.isDisguised && originalCard.disguiseColor) {
           newCard.isDisguised = true;
           newCard.disguiseColor = originalCard.disguiseColor;
-          newCard.color = originalCard.disguiseColor;
+          newCard.type = originalCard.disguiseColor;
         }
         
         // 添加新卡牌到cards数组

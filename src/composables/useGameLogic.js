@@ -77,7 +77,7 @@ export function useGameLogic() {
     const prototypeCard = {
       id: `empty-${playerId}`,
       cardNo: null,
-      color: 'empty',
+      type: 'empty',
       owner: playerId,
       visibility: 'hidden',
       isEmpty: true,

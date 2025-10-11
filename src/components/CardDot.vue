@@ -71,7 +71,7 @@ export default {
       } 
       // 如果是非空卡牌，显示正常颜色或伪装颜色
       else {
-        classes.push(this.card.isDisguised ? this.card.disguiseColor : this.card.color);
+        classes.push(this.card.isDisguised ? this.card.disguiseColor : this.card.type);
       }
       
       // 如果是原型卡牌，添加prototype类

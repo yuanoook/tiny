@@ -12,17 +12,17 @@ const initPlayers = () => {
 
 // 生成初始卡牌数据
 const initCards = () => {
-  const colors = ['red', 'yellow', 'green'];
+  const types = ['red', 'yellow', 'green'];
   const cards = [];
   
-  // 生成60张卡牌，每种颜色各20张
+  // 生成60张卡牌，每种类型各20张
   for (let i = 0; i < 60; i++) {
-    const colorIndex = Math.floor(i / 20); // 每20张为一种颜色
-    const color = colors[colorIndex];
+    const typeIndex = Math.floor(i / 20); // 每20张为一种类型
+    const type = types[typeIndex];
     const card = {
       id: i + 1,
       cardNo: i + 1,
-      color: color,
+      type: type,
       owner: 'deck', // 所有卡牌初始时都在新牌堆
       visibility: 'hidden',
       updateTime: Date.now() // 添加更新时间字段
@@ -50,7 +50,7 @@ const addEmptyCardsForPlayers = (players, cards) => {
     const card = {
       id: `empty-${player.id}`,
       cardNo: null, // 初始时没有卡牌编号
-      color: 'empty',
+      type: 'empty',
       owner: player.id,
       visibility: 'hidden',
       isEmpty: true, // 标记为empty卡牌
@@ -178,7 +178,7 @@ const createNewCard = (cardNo, owner, to = null) => {
   const card = {
     id: `new-${Date.now()}`,
     cardNo: cardNo,
-    color: 'empty',
+    type: 'empty',
     owner: owner,
     to: to,
     visibility: 'hidden',
@@ -200,7 +200,7 @@ const createPrototypeEmptyCard = (owner) => {
   const card = {
     id: `empty-${owner}`,
     cardNo: null,
-    color: 'empty',
+    type: 'empty',
     owner: owner,
     visibility: 'hidden',
     isEmpty: true,

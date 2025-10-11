@@ -3,7 +3,7 @@
     <div class="card-modal" @click.stop>
       <div class="modal-options-circles">
         <div class="option-circle" 
-             :class="currentCard && currentCard.visibility === 'hidden' ? (currentCard ? currentCard.color : 'hidden') : 'hidden'"
+             :class="currentCard && currentCard.visibility === 'hidden' ? (currentCard ? currentCard.type : 'hidden') : 'hidden'"
              @click="toggleCardVisibility">
         </div>
         <div class="option-circle red" 
