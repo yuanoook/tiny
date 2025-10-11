@@ -2,9 +2,9 @@
 
 import { ref, computed } from 'vue';
 import { createNewCard, moveCardToZone, getNewCardNo } from '../gameState.js';
-import { moveCard, recordGlobalHistory } from '../gameManager.js';
+import { recordGlobalHistory } from '../gameManager.js';
 
-export function useDragAndDrop() {
+export function useDragAndDrop(cards) {
   // 拖拽状态
   const draggingCard = ref(null);
   const originalDraggingCard = ref(null);
@@ -110,10 +110,18 @@ export function useDragAndDrop() {
           to: colZoneId
         });
       } else {
-        // 对于非原型卡牌，使用游戏管理器移动卡牌
-        moveCard(draggingCard.value.id, 
-          { row: draggingCard.value.owner, col: draggingCard.value.to }, 
-          { row: rowZoneId, col: colZoneId });
+        // 对于非原型卡牌，使用moveCardToZone获取更新后的数组并替换原数组
+        const updatedCards = moveCardToZone(cards, draggingCard.value.id, rowZoneId, colZoneId);
+        
+        // 使用splice和展开运算符来替换整个cards数组，确保Vue能检测到变化
+        cards.splice(0, cards.length, ...updatedCards);
+        
+        // 记录全局历史
+        recordGlobalHistory('moveCard', {
+          cardId: draggingCard.value.id,
+          from: { row: draggingCard.value.owner, col: draggingCard.value.to },
+          to: { row: rowZoneId, col: colZoneId }
+        });
       }
       
       // 重置拖拽状态
@@ -158,10 +166,18 @@ export function useDragAndDrop() {
           to: null
         });
       } else {
-        // 对于非原型卡牌，使用游戏管理器移动卡牌
-        moveCard(draggingCard.value.id, 
-          { row: draggingCard.value.owner, col: draggingCard.value.to }, 
-          { row: zoneId, col: null });
+        // 对于非原型卡牌，使用moveCardToZone获取更新后的数组并替换原数组
+        const updatedCards = moveCardToZone(cards, draggingCard.value.id, zoneId, null);
+        
+        // 使用splice和展开运算符来替换整个cards数组，确保Vue能检测到变化
+        cards.splice(0, cards.length, ...updatedCards);
+        
+        // 记录全局历史
+        recordGlobalHistory('moveCard', {
+          cardId: draggingCard.value.id,
+          from: { row: draggingCard.value.owner, col: draggingCard.value.to },
+          to: { row: zoneId, col: null }
+        });
       }
       
       // 重置拖拽状态

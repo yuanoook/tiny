@@ -88,26 +88,6 @@ export default {
     TableRow
   },
   setup() {
-    // 使用拖拽逻辑
-    const {
-      draggingCard,
-      originalDraggingCard,
-      dragImage,
-      draggingCardStyle,
-      isDragging,
-      handleDragStart: useDragAndDropHandleDragStart,
-      handleDocumentDragOver,
-      handleDragOver,
-      handleDragEnd,
-      handleDrop,
-      handleDropToHeader
-    } = useDragAndDrop()
-    
-    // 处理拖拽开始
-    const handleDragStart = (card, event) => {
-      useDragAndDropHandleDragStart(card, event)
-    }
-    
     // 使用游戏逻辑
     const {
       players,
@@ -127,6 +107,26 @@ export default {
       moveCard,
       printHistory
     } = useGameLogic()
+    
+    // 使用拖拽逻辑
+    const {
+      draggingCard,
+      originalDraggingCard,
+      dragImage,
+      draggingCardStyle,
+      isDragging,
+      handleDragStart: useDragAndDropHandleDragStart,
+      handleDocumentDragOver,
+      handleDragOver,
+      handleDragEnd,
+      handleDrop,
+      handleDropToHeader
+    } = useDragAndDrop(cards)
+    
+    // 处理拖拽开始
+    const handleDragStart = (card, event) => {
+      useDragAndDropHandleDragStart(card, event)
+    }
     
     // 使用卡牌操作逻辑
     const {
