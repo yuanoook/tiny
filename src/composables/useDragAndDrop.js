@@ -96,7 +96,6 @@ export function useDragAndDrop(cards) {
         if (originalCard.isDisguised && originalCard.disguiseColor) {
           newCard.isDisguised = true;
           newCard.disguiseColor = originalCard.disguiseColor;
-          newCard.type = originalCard.disguiseColor;
         }
         
         // 添加新卡牌到cards数组
@@ -152,7 +151,6 @@ export function useDragAndDrop(cards) {
         if (originalCard.isDisguised && originalCard.disguiseColor) {
           newCard.isDisguised = true;
           newCard.disguiseColor = originalCard.disguiseColor;
-          newCard.type = originalCard.disguiseColor;
         }
         
         // 添加新卡牌到cards数组
