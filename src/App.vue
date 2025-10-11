@@ -1,7 +1,5 @@
 <template>
   <div id="app">
-    <!-- <h1>卡牌游戏 - 表格布局</h1> -->
-    
     <!-- 顶部控制区域 -->
     <div class="top-controls">
       <!-- 游戏控制按钮 -->
