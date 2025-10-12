@@ -19,7 +19,7 @@
     </div>
     
     <!-- 玩家的隐藏牌区域 -->
-    <div class="player-hidden-cards" v-if="hiddenCards.length > 0">
+    <div class="player-hidden-cards" v-if="hiddenCards.length > 0 && !isSelfView">
       <div class="hidden-cards-label">隐藏卡牌:</div>
       <CardDot
         v-for="card in hiddenCards"
@@ -55,6 +55,10 @@ export default {
       type: Boolean,
       default: false
     },
+    isSelfView: {
+      type: Boolean,
+      default: false
+    },
     handleDragStart: {
       type: Function,
       required: true
@@ -70,13 +74,25 @@ export default {
       return this.cards.filter(card => card.owner === this.player.id);
     },
     
-    // 获取该玩家的可见卡牌（非隐藏状态）
+    // 获取该玩家的可见卡牌
     visibleCards() {
+      // 如果是玩家自己查看，则显示所有卡牌为明牌
+      if (this.isSelfView) {
+        return this.playerCards.map(card => ({
+          ...card,
+          visibility: 'visible'
+        }));
+      }
+      // 否则只显示非隐藏状态的卡牌
       return this.playerCards.filter(card => card.visibility !== 'hidden');
     },
     
     // 获取该玩家的隐藏卡牌
     hiddenCards() {
+      // 如果是玩家自己查看，则不显示隐藏卡牌区域
+      if (this.isSelfView) {
+        return [];
+      }
       return this.playerCards.filter(card => card.visibility === 'hidden');
     }
   },
