@@ -7,6 +7,7 @@
         <button @click="addPlayer">添加玩家</button>
         <button @click="resetGame">重置游戏</button>
         <button @click="printHistory">打印历史</button>
+        <button v-if="!hasDealtCards" @click="dealCards">发牌</button>
         
         <!-- 玩家列表 -->
         <div class="players-list">
@@ -189,6 +190,9 @@ export default {
     // 添加选中玩家的响应式变量
     const selectedPlayerId = ref(null)
     
+    // 添加是否已发牌的响应式变量
+    const hasDealtCards = ref(false)
+    
     // 选择玩家的方法
     const selectPlayer = (playerId) => {
       selectedPlayerId.value = playerId
@@ -197,6 +201,49 @@ export default {
     // 取消选择玩家的方法
     const deselectPlayer = () => {
       selectedPlayerId.value = null
+    }
+    
+    // 发牌方法
+    const dealCards = () => {
+      // 检查是否已经发过牌
+      if (hasDealtCards.value) return
+      
+      // 获取新牌堆中的卡牌
+      const deckCards = cards.value.filter(card => card.owner === 'deck' && card.type !== 'empty')
+      
+      // 确保有足够的卡牌
+      if (deckCards.length < players.value.length * 10) {
+        console.error('卡牌数量不足，无法给每个玩家发10张牌')
+        return
+      }
+      
+      // 给每个玩家发10张牌
+      players.value.forEach(player => {
+        for (let i = 0; i < 10; i++) {
+          // 从新牌堆中取出一张卡牌
+          const cardToDeal = deckCards.pop()
+          if (cardToDeal) {
+            // 更新卡牌位置到玩家区域
+            const cardIndex = cards.value.findIndex(card => card.id === cardToDeal.id)
+            if (cardIndex !== -1) {
+              cards.value[cardIndex] = {
+                ...cards.value[cardIndex],
+                owner: player.id,
+                updateTime: Date.now()
+              }
+            }
+          }
+        }
+      })
+      
+      // 标记已发牌
+      hasDealtCards.value = true
+    }
+    
+    // 重置游戏时重置发牌状态
+    const resetGameAndDealStatus = () => {
+      resetGame()
+      hasDealtCards.value = false
     }
     
     return {
@@ -210,6 +257,7 @@ export default {
       currentCard,
       dragImage,
       selectedPlayerId,
+      hasDealtCards,
       
       // 计算属性
       draggingCardStyle,
@@ -228,7 +276,7 @@ export default {
       isCenterZone,
       addPlayer,
       removePlayer,
-      resetGame,
+      resetGame: resetGameAndDealStatus,
       toggleCardDisguise,
       toggleCardVisibility,
       setDisguiseColor,
@@ -236,7 +284,8 @@ export default {
       onPlayerCardDoubleClick,
       printHistory,
       selectPlayer,
-      deselectPlayer
+      deselectPlayer,
+      dealCards
     }
   },
   mounted() {
