@@ -63,34 +63,20 @@
     </div>
     
     <!-- 表格布局的牌堆区域 -->
-    <div class="game-table">
-      <!-- 表头 -->
-      <TableHeader
-        :base-zones="baseZones"
-        :players="players"
-        :cards="cards"
-        :is-dragging="isDragging"
-        :handle-drag-start="handleDragStart"
-        :handle-drag-end="handleDragEnd"
-        :handle-drag-over="handleDragOver"
-        :handle-drop-to-header="handleDropToHeader"
-        :toggle-card-disguise="toggleCardDisguise"
-      />
-      
-      <!-- 行 -->
-      <TableRow
-        :zones="allZones"
-        :all-zones="allZones"
-        :cards="cards"
-        :is-dragging="isDragging"
-        :handle-drag-start="handleDragStart"
-        :handle-drag-end="handleDragEnd"
-        :handle-drag-over="handleDragOver"
-        :handle-drop="handleDrop"
-        :handle-drop-to-header="handleDropToHeader"
-        :toggle-card-disguise="toggleCardDisguise"
-      />
-    </div>
+    <GameTable
+      v-show="selectedPlayerId === null"
+      :base-zones="baseZones"
+      :players="players"
+      :cards="cards"
+      :all-zones="allZones"
+      :is-dragging="isDragging"
+      :handle-drag-start="handleDragStart"
+      :handle-drag-end="handleDragEnd"
+      :handle-drag-over="handleDragOver"
+      :handle-drop="handleDrop"
+      :handle-drop-to-header="handleDropToHeader"
+      :toggle-card-disguise="toggleCardDisguise"
+    />
     
     <!-- 拖拽时跟随鼠标的卡牌 -->
     <CardDot
@@ -118,6 +104,7 @@ import CardModal from './components/CardModal.vue'
 import TableHeader from './components/table/TableHeader.vue'
 import TableRow from './components/table/TableRow.vue'
 import PlayerPanel from './components/PlayerPanel.vue'
+import GameTable from './components/GameTable.vue'
 import { ref, computed, watch } from 'vue';
 import { useDragAndDrop } from './composables/useDragAndDrop.js'
 import { useGameLogic } from './composables/useGameLogic.js'
@@ -131,7 +118,8 @@ export default {
     CardModal,
     TableHeader,
     TableRow,
-    PlayerPanel
+    PlayerPanel,
+    GameTable
   },
   setup() {
     // 使用游戏逻辑
