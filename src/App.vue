@@ -10,9 +10,23 @@
         
         <!-- 玩家列表 -->
         <div class="players-list">
-          <div class="player" v-for="player in players" :key="player.id">
+          <div 
+            class="player" 
+            v-for="player in players" 
+            :key="player.id"
+            @click="selectPlayer(player.id)"
+            :class="{ 'selected': selectedPlayerId === player.id }"
+          >
             {{ player.name }}
-            <button v-if="players.length > 2" @click="removePlayer(player.id)">移除</button>
+            <button v-if="players.length > 2" @click.stop="removePlayer(player.id)">移除</button>
+          </div>
+          <!-- 添加取消选择的按钮 -->
+          <div 
+            class="player all-players"
+            @click="deselectPlayer"
+            :class="{ 'selected': selectedPlayerId === null }"
+          >
+            全部玩家
           </div>
         </div>
       </div>
@@ -20,16 +34,32 @@
     
     <!-- 玩家面板区域 -->
     <div class="player-panels">
-      <PlayerPanel
-        v-for="player in players"
-        :key="`player-panel-${player.id}`"
-        :player="player"
-        :cards="cards"
-        :is-active="false"
-        :handle-drag-start="handleDragStart"
-        :handle-drag-end="handleDragEnd"
-        @card-double-click="onPlayerCardDoubleClick"
-      />
+      <template v-if="selectedPlayerId === null">
+        <!-- 显示所有玩家的面板 -->
+        <PlayerPanel
+          v-for="player in players"
+          :key="`player-panel-${player.id}`"
+          :player="player"
+          :cards="cards"
+          :is-active="false"
+          :handle-drag-start="handleDragStart"
+          :handle-drag-end="handleDragEnd"
+          @card-double-click="onPlayerCardDoubleClick"
+        />
+      </template>
+      <template v-else>
+        <!-- 只显示选中玩家的面板 -->
+        <PlayerPanel
+          v-for="player in players.filter(p => p.id === selectedPlayerId)"
+          :key="`player-panel-${player.id}`"
+          :player="player"
+          :cards="cards"
+          :is-active="true"
+          :handle-drag-start="handleDragStart"
+          :handle-drag-end="handleDragEnd"
+          @card-double-click="onPlayerCardDoubleClick"
+        />
+      </template>
     </div>
     
     <!-- 表格布局的牌堆区域 -->
@@ -168,6 +198,19 @@ export default {
       showCardModal.value = true
     }
     
+    // 添加选中玩家的响应式变量
+    const selectedPlayerId = ref(null)
+    
+    // 选择玩家的方法
+    const selectPlayer = (playerId) => {
+      selectedPlayerId.value = playerId
+    }
+    
+    // 取消选择玩家的方法
+    const deselectPlayer = () => {
+      selectedPlayerId.value = null
+    }
+    
     return {
       // 数据属性
       players,
@@ -178,6 +221,7 @@ export default {
       showCardModal,
       currentCard,
       dragImage,
+      selectedPlayerId,
       
       // 计算属性
       draggingCardStyle,
@@ -202,7 +246,9 @@ export default {
       setDisguiseColor,
       handleKeydown,
       onPlayerCardDoubleClick,
-      printHistory
+      printHistory,
+      selectPlayer,
+      deselectPlayer
     }
   },
   mounted() {
@@ -345,29 +391,31 @@ export default {
 
 
 .players-list {
-  display: inline-block;
-  margin: 0;
-  vertical-align: middle;
+  display: flex;
+  gap: 10px;
 }
 
-.players-list .player {
-  display: inline-block;
-  margin: 0 10px 0 0;
-  padding: 8px 12px;
-  border: 1px solid white;
-  border-radius: 5px;
+.player {
+  padding: 8px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
   background-color: #f5f5f5;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.players-list .player button {
-  margin-left: 10px;
-  padding: 3px 8px;
-  border: none;
-  border-radius: 3px;
-  background-color: #f44336;
+.player:hover {
+  background-color: #e0e0e0;
+}
+
+.player.selected {
+  border-color: #42b983;
+  background-color: #42b983;
   color: white;
-  cursor: pointer;
-  font-size: 12px;
+}
+
+.player.all-players {
+  font-style: italic;
 }
 
 /* 玩家面板区域 */
