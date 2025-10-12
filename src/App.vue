@@ -18,6 +18,20 @@
       </div>
     </div>
     
+    <!-- 玩家面板区域 -->
+    <div class="player-panels">
+      <PlayerPanel
+        v-for="player in players"
+        :key="`player-panel-${player.id}`"
+        :player="player"
+        :cards="cards"
+        :is-active="false"
+        :handle-drag-start="handleDragStart"
+        :handle-drag-end="handleDragEnd"
+        @card-double-click="onPlayerCardDoubleClick"
+      />
+    </div>
+    
     <!-- 表格布局的牌堆区域 -->
     <div class="game-table">
       <!-- 表头 -->
@@ -73,6 +87,7 @@ import CardDot from './components/CardDot.vue'
 import CardModal from './components/CardModal.vue'
 import TableHeader from './components/table/TableHeader.vue'
 import TableRow from './components/table/TableRow.vue'
+import PlayerPanel from './components/PlayerPanel.vue'
 import { ref, computed, watch } from 'vue';
 import { useDragAndDrop } from './composables/useDragAndDrop.js'
 import { useGameLogic } from './composables/useGameLogic.js'
@@ -85,7 +100,8 @@ export default {
     CardDot,
     CardModal,
     TableHeader,
-    TableRow
+    TableRow,
+    PlayerPanel
   },
   setup() {
     // 使用游戏逻辑
@@ -145,6 +161,13 @@ export default {
       }
     }
     
+    // 处理玩家面板卡牌双击事件
+    const onPlayerCardDoubleClick = (card) => {
+      // 设置当前卡牌并显示弹窗
+      currentCard.value = card
+      showCardModal.value = true
+    }
+    
     return {
       // 数据属性
       players,
@@ -178,6 +201,7 @@ export default {
       toggleCardVisibility,
       setDisguiseColor,
       handleKeydown,
+      onPlayerCardDoubleClick,
       printHistory
     }
   },
@@ -344,6 +368,11 @@ export default {
   color: white;
   cursor: pointer;
   font-size: 12px;
+}
+
+/* 玩家面板区域 */
+.player-panels {
+  margin: 20px 0;
 }
 
 /* 调整弹窗选项布局，使用纯圆点 */
