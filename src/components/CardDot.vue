@@ -10,7 +10,8 @@
         'empty': card.type === 'empty' && !(card.isDisguised && card.disguiseColor),
         'header-card': isHeaderCard,
         'deck-card': isDeckCard,
-        'deck-header-card': isDeckHeaderCard
+        'deck-header-card': isDeckHeaderCard,
+        'self-view': isSelfView
       }
     ]"
     :style="cardStyle"
@@ -20,6 +21,10 @@
     @dblclick="handleDoubleClick"
   >
     <span class="card-id" v-if="card.type !== 'empty' || card.cardNo">{{ card.cardNo }}</span>
+    <!-- 小孔展示卡牌的真正类型 -->
+    <div class="true-type-hole" v-if="isSelfView && card.type !== 'empty'">
+      <div class="true-type-indicator" :class="card.type"></div>
+    </div>
   </div>
 </template>
 
@@ -44,6 +49,10 @@ export default {
       default: false
     },
     isDeckHeaderCard: {
+      type: Boolean,
+      default: false
+    },
+    isSelfView: {
       type: Boolean,
       default: false
     },
@@ -225,5 +234,46 @@ export default {
   font-weight: bold;
   pointer-events: none;
   z-index: 1;
+}
+
+/* 玩家自己查看时的样式 */
+.card-dot.self-view {
+  position: relative;
+}
+
+/* 小孔样式 */
+.true-type-hole {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: white;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+/* 真正类型的指示器 */
+.true-type-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.true-type-indicator.red {
+  background-color: #ff6b6b;
+}
+
+.true-type-indicator.yellow {
+  background-color: #f9c942;
+}
+
+.true-type-indicator.green {
+  background-color: #51cf66;
 }
 </style>

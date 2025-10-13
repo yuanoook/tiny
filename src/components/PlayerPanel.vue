@@ -5,27 +5,14 @@
       <div class="card-count">卡牌数量: {{ playerCards.length }}</div>
     </div>
     
-    <!-- 玩家的手牌区域 - 明牌展开显示 -->
+    <!-- 玩家的卡牌区域 - 包含所有卡牌 -->
     <div class="player-hand">
       <CardDot
-        v-for="card in visibleCards"
+        v-for="card in playerCards"
         :key="`player-card-${card.id}`"
         :card="card"
         :is-deck-card="false"
-        @doubleclick="onCardDoubleClick"
-        @dragstart="onCardDragStart(card, $event)"
-        @dragend="onCardDragEnd"
-      />
-    </div>
-    
-    <!-- 玩家的隐藏牌区域 -->
-    <div class="player-hidden-cards" v-if="hiddenCards.length > 0 && !isSelfView">
-      <div class="hidden-cards-label">隐藏卡牌:</div>
-      <CardDot
-        v-for="card in hiddenCards"
-        :key="`player-hidden-card-${card.id}`"
-        :card="card"
-        :is-deck-card="false"
+        :is-self-view="isSelfView"
         @doubleclick="onCardDoubleClick"
         @dragstart="onCardDragStart(card, $event)"
         @dragend="onCardDragEnd"
@@ -72,28 +59,6 @@ export default {
     // 获取该玩家的所有卡牌
     playerCards() {
       return this.cards.filter(card => card.owner === this.player.id);
-    },
-    
-    // 获取该玩家的可见卡牌
-    visibleCards() {
-      // 如果是玩家自己查看，则显示所有卡牌为明牌
-      if (this.isSelfView) {
-        return this.playerCards.map(card => ({
-          ...card,
-          visibility: 'visible'
-        }));
-      }
-      // 否则只显示非隐藏状态的卡牌
-      return this.playerCards.filter(card => card.visibility !== 'hidden');
-    },
-    
-    // 获取该玩家的隐藏卡牌
-    hiddenCards() {
-      // 如果是玩家自己查看，则不显示隐藏卡牌区域
-      if (this.isSelfView) {
-        return [];
-      }
-      return this.playerCards.filter(card => card.visibility === 'hidden');
     }
   },
   methods: {
@@ -130,24 +95,24 @@ export default {
   background-color: #f0f9f5;
 }
 
-.player-header {
+.player-panel .player-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 }
 
-.player-header h3 {
+.player-panel .player-header h3 {
   margin: 0;
   color: #333;
 }
 
-.card-count {
+.player-panel .card-count {
   font-size: 14px;
   color: #666;
 }
 
-.player-hand {
+.player-panel .player-hand {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -157,22 +122,5 @@ export default {
   border-radius: 8px;
   border: 1px solid #eee;
   margin-bottom: 15px;
-}
-
-.player-hidden-cards {
-  padding: 10px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  border: 1px solid #eee;
-}
-
-.hidden-cards-label {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
-}
-
-.player-hidden-cards .card-dot {
-  opacity: 0.7;
 }
 </style>
