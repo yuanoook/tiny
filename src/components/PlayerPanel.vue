@@ -7,7 +7,7 @@
     
     <!-- 玩家的卡牌区域 - 包含所有卡牌 -->
     <div class="player-hand">
-      <CardDot
+      <Card
         v-for="card in playerCards"
         :key="`player-card-${card.id}`"
         :card="card"
@@ -22,12 +22,12 @@
 </template>
 
 <script>
-import CardDot from './CardDot.vue';
+import Card from './Card.vue';
 
 export default {
   name: "PlayerPanel",
   components: {
-    CardDot
+    Card
   },
   props: {
     player: {
