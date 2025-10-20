@@ -33,6 +33,11 @@
       </div>
     </div>
     
+    <!-- 当前玩家提示 -->
+    <div class="current-player-indicator" v-if="currentPlayerId && hasDealtCards">
+      <p>当前轮到: <strong>{{ players.find(p => p.id === currentPlayerId)?.name }}</strong> 出牌</p>
+    </div>
+    
     <!-- 玩家面板区域 -->
     <div class="player-panels">
       <template v-if="selectedPlayerId === null">
@@ -46,6 +51,7 @@
             :handle-drag-end="handleDragEnd"
             :handle-drag-over="handleDragOver"
             :handle-battle-drop="handleBattleDrop"
+            :is-self-view="false"
           />
           <PlayerPanel
             :player="player"
@@ -71,6 +77,7 @@
             :handle-drag-end="handleDragEnd"
             :handle-drag-over="handleDragOver"
             :handle-battle-drop="handleBattleDrop"
+            :is-self-view="true"
           />
           <PlayerPanel
             :player="player"
@@ -244,20 +251,39 @@ export default {
         return;
       }
       
+      // 检查是否轮到当前玩家出牌
+      if (currentPlayerId.value && currentPlayerId.value !== selectedPlayerId.value) {
+        console.log('还未轮到你出牌，请等待对方出牌');
+        return;
+      }
+      
       // 如果战斗尚未开始，第一张牌必须是黄色类型或伪装为黄色类型
       if (!battleStarted) {
         // 开始战斗
         updateBattleState(true);
         // 移动卡牌到对应玩家的对战区
         moveCard(draggingCard.id, { row: draggingCard.owner, col: draggingCard.to }, { row: rowZoneId, col: null });
+        // 设置下一个玩家为当前玩家
+        const nextPlayer = players.value.find(p => p.id !== selectedPlayerId.value);
+        if (nextPlayer) {
+          currentPlayerId.value = nextPlayer.id;
+        }
       } else {
         // 战斗已开始，可以放置更多卡牌到对战区
         moveCard(draggingCard.id, { row: draggingCard.owner, col: draggingCard.to }, { row: rowZoneId, col: null });
+        // 切换当前玩家
+        const nextPlayer = players.value.find(p => p.id !== currentPlayerId.value);
+        if (nextPlayer) {
+          currentPlayerId.value = nextPlayer.id;
+        }
       }
     }
     
     // 添加选中玩家的响应式变量
     const selectedPlayerId = ref(null)
+    
+    // 添加当前玩家的响应式变量（用于轮次控制）
+    const currentPlayerId = ref(null)
     
     // 添加是否已发牌的响应式变量
     const hasDealtCards = ref(false)
@@ -307,12 +333,18 @@ export default {
       
       // 标记已发牌
       hasDealtCards.value = true
+      
+      // 初始化当前玩家为第一个玩家
+      if (players.value.length > 0) {
+        currentPlayerId.value = players.value[0].id;
+      }
     }
     
     // 重置游戏时重置发牌状态
     const resetGameAndDealStatus = () => {
       resetGame()
       hasDealtCards.value = false
+      currentPlayerId.value = null
     }
     
     return {
@@ -326,6 +358,7 @@ export default {
       currentCard,
       dragImage,
       selectedPlayerId,
+      currentPlayerId,
       hasDealtCards,
       
       // 计算属性
@@ -405,6 +438,22 @@ export default {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 20px;
+}
+
+/* 当前玩家提示 */
+.current-player-indicator {
+  background-color: #e3f2fd;
+  border: 2px solid #2196f3;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.current-player-indicator p {
+  margin: 0;
+  font-size: 16px;
+  color: #1976d2;
 }
 
 .game-table {

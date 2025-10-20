@@ -8,13 +8,16 @@
     </div>
     <div class="zone-content">
       <!-- 显示在对战区的卡牌 -->
-      <CardDot
+      <Card
         v-for="card in battleCards"
         :key="card.id"
-        :card="card"
-        :is-dragging="isDragging(card)"
-        @dragstart="handleDragStart(card, $event)"
-        @dragend="handleDragEnd"
+        :type="card.type"
+        :is-disguised="card.isDisguised"
+        :disguise-color="card.disguiseColor"
+        :card-no="card.cardNo"
+        :is-draggable="false"
+        :is-self-view="isSelfView"
+        @dblclick="() => handleDoubleClick(card)"
       />
     </div>
     <div class="battle-instructions" v-if="!battleStarted">
@@ -24,13 +27,13 @@
 </template>
 
 <script>
-import CardDot from './CardDot.vue';
+import Card from './Card.vue';
 import { isYellowCard } from '../utils/cardUtils.js';
 
 export default {
   name: "PlayerBattleZone",
   components: {
-    CardDot
+    Card
   },
   props: {
     cards: {
@@ -60,6 +63,10 @@ export default {
     handleBattleDrop: {
       type: Function,
       required: true
+    },
+    isSelfView: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -78,6 +85,12 @@ export default {
       this.handleBattleDrop(`battle-${this.playerId}`, null, this.cards, this.battleStarted, (newBattleState) => {
         this.battleStarted = newBattleState;
       }, event);
+    },
+    handleDoubleClick(card) {
+      // 双击卡牌的处理逻辑可以根据需要添加
+      console.log('双击卡牌:', card);
+      // 这里可以添加更多逻辑，比如查看卡牌详情等
+      this.$emit('card-double-click', card);
     }
   }
 };
