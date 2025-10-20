@@ -210,14 +210,6 @@ export default {
     
     // 处理玩家面板卡牌双击事件
     const onPlayerCardDoubleClick = (card) => {
-      // 检查是否是玩家一选中的卡牌，并且是黄色类型或伪装成黄色类型
-      const currentPlayer = players.value.find(p => p.id === selectedPlayerId.value);
-      if (currentPlayer && currentPlayer.id === 'player1' && isYellowCard(card)) {
-        // 执行攻击逻辑 - 将卡牌移动到弃牌堆
-        moveCard(card.id, { row: card.owner, col: card.to }, { row: 'discard', col: null });
-        return;
-      }
-      
       // 设置当前卡牌并显示弹窗
       currentCard.value = card
       showCardModal.value = true
