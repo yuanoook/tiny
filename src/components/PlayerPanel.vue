@@ -56,9 +56,20 @@ export default {
     }
   },
   computed: {
-    // 获取该玩家的所有卡牌
+    // 获取该玩家的所有卡牌，确保empty prototype卡牌始终排在第一位
     playerCards() {
-      return this.cards.filter(card => card.owner === this.player.id);
+      const cards = this.cards.filter(card => card.owner === this.player.id);
+      
+      // 将empty prototype卡牌排在第一位
+      const prototypeCard = cards.find(card => card.isPrototype);
+      const otherCards = cards.filter(card => !card.isPrototype);
+      
+      // 如果存在prototype卡牌，则将其放在数组开头
+      if (prototypeCard) {
+        return [prototypeCard, ...otherCards];
+      }
+      
+      return cards;
     }
   },
   methods: {
