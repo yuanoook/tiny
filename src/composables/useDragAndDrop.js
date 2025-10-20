@@ -46,6 +46,17 @@ export function useDragAndDrop(cards) {
       draggingCard.value = card; // 直接使用原卡牌作为拖拽卡牌
     }
 
+    // 设置拖拽数据
+    event.dataTransfer.setData('text/plain', JSON.stringify({
+      id: card.id,
+      type: card.type,
+      isDisguised: card.isDisguised,
+      disguiseColor: card.disguiseColor
+    }));
+
+    // 设置拖拽效果
+    event.dataTransfer.effectAllowed = 'move';
+
     // 计算鼠标相对于卡牌左上角的偏移量
     const rect = event.target.getBoundingClientRect();
     dragOffsetX.value = event.clientX - rect.left;
