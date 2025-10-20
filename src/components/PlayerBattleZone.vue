@@ -11,12 +11,9 @@
       <Card
         v-for="card in battleCards"
         :key="card.id"
-        :type="card.type"
-        :is-disguised="card.isDisguised"
-        :disguise-color="card.disguiseColor"
-        :card-no="card.cardNo"
-        :is-draggable="false"
+        :card="card"
         :is-self-view="isSelfView"
+        :draggable="false"
         @dblclick="() => handleDoubleClick(card)"
       />
     </div>
