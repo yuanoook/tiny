@@ -1,7 +1,7 @@
 <template>
-  <div class="battle-zone" @dragover.prevent="handleDragOver" @drop="handleDrop">
+  <div class="player-battle-zone" @dragover.prevent="handleDragOver" @drop="handleDrop">
     <div class="zone-header">
-      <h3>PK对战区</h3>
+      <h4>对战区</h4>
       <div class="battle-status" v-if="battleStarted">
         <span>战斗进行中...</span>
       </div>
@@ -18,8 +18,7 @@
       />
     </div>
     <div class="battle-instructions" v-if="!battleStarted">
-      <p>将黄色卡牌或伪装成黄色的卡牌拖拽到这里开始战斗</p>
-      <p>第一张牌必须是黄色类型或伪装为黄色类型</p>
+      <p>将黄色卡牌拖拽到这里开始战斗</p>
     </div>
   </div>
 </template>
@@ -29,13 +28,17 @@ import CardDot from './CardDot.vue';
 import { isYellowCard } from '../utils/cardUtils.js';
 
 export default {
-  name: "BattleZone",
+  name: "PlayerBattleZone",
   components: {
     CardDot
   },
   props: {
     cards: {
       type: Array,
+      required: true
+    },
+    playerId: {
+      type: String,
       required: true
     },
     isDragging: {
@@ -66,13 +69,13 @@ export default {
   },
   computed: {
     battleCards() {
-      // 获取在PK对战区的卡牌
-      return this.cards.filter(card => card.owner === 'battle');
+      // 获取属于当前玩家的对战区卡牌
+      return this.cards.filter(card => card.owner === `battle-${this.playerId}`);
     }
   },
   methods: {
     handleDrop(event) {
-      this.handleBattleDrop('battle', null, this.cards, this.battleStarted, (newBattleState) => {
+      this.handleBattleDrop(`battle-${this.playerId}`, null, this.cards, this.battleStarted, (newBattleState) => {
         this.battleStarted = newBattleState;
       }, event);
     }
@@ -81,12 +84,12 @@ export default {
 </script>
 
 <style scoped>
-.battle-zone {
+.player-battle-zone {
   border: 2px dashed #ff9800;
-  border-radius: 10px;
-  padding: 15px;
-  margin: 20px 0;
-  min-height: 120px;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 15px;
+  min-height: 80px;
   background-color: #fff3e0;
   position: relative;
 }
@@ -95,27 +98,28 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
-.zone-header h3 {
+.zone-header h4 {
   margin: 0;
   color: #e65100;
+  font-size: 14px;
 }
 
 .battle-status {
   background-color: #ff9800;
   color: white;
-  padding: 5px 10px;
-  border-radius: 15px;
-  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
 }
 
 .zone-content {
-  min-height: 80px;
+  min-height: 50px;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .battle-instructions {
@@ -125,13 +129,13 @@ export default {
   transform: translate(-50%, -50%);
   text-align: center;
   color: #9e9e9e;
-  font-size: 14px;
+  font-size: 12px;
   width: 100%;
-  padding: 0 20px;
+  padding: 0 15px;
   box-sizing: border-box;
 }
 
 .battle-instructions p {
-  margin: 5px 0;
+  margin: 3px 0;
 }
 </style>

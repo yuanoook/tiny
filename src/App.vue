@@ -36,36 +36,54 @@
     <!-- 玩家面板区域 -->
     <div class="player-panels">
       <template v-if="selectedPlayerId === null">
-        <!-- 显示所有玩家的面板 -->
-        <PlayerPanel
-          v-for="player in players"
-          :key="`player-panel-${player.id}`"
-          :player="player"
-          :cards="cards"
-          :is-active="false"
-          :is-self-view="false"
-          :handle-drag-start="handleDragStart"
-          :handle-drag-end="handleDragEnd"
-          :handle-drag-over="handleDragOver"
-          :handle-drop="handleDrop"
-          @card-double-click="onPlayerCardDoubleClick"
-        />
+        <!-- 显示所有玩家的面板，每个玩家上方都有一个对战区 -->
+        <template v-for="player in players" :key="`player-${player.id}`">
+          <PlayerBattleZone
+            :player-id="player.id"
+            :cards="cards"
+            :is-dragging="isDragging"
+            :handle-drag-start="handleDragStart"
+            :handle-drag-end="handleDragEnd"
+            :handle-drag-over="handleDragOver"
+            :handle-battle-drop="handleBattleDrop"
+          />
+          <PlayerPanel
+            :player="player"
+            :cards="cards"
+            :is-active="false"
+            :is-self-view="false"
+            :handle-drag-start="handleDragStart"
+            :handle-drag-end="handleDragEnd"
+            :handle-drag-over="handleDragOver"
+            :handle-drop="handleDrop"
+            @card-double-click="onPlayerCardDoubleClick"
+          />
+        </template>
       </template>
       <template v-else>
-        <!-- 只显示选中玩家的面板 -->
-        <PlayerPanel
-          v-for="player in players.filter(p => p.id === selectedPlayerId)"
-          :key="`player-panel-${player.id}`"
-          :player="player"
-          :cards="cards"
-          :is-active="true"
-          :is-self-view="true"
-          :handle-drag-start="handleDragStart"
-          :handle-drag-end="handleDragEnd"
-          :handle-drag-over="handleDragOver"
-          :handle-drop="handleDrop"
-          @card-double-click="onPlayerCardDoubleClick"
-        />
+        <!-- 只显示选中玩家的面板，上方有一个对战区 -->
+        <template v-for="player in players.filter(p => p.id === selectedPlayerId)" :key="`player-${player.id}`">
+          <PlayerBattleZone
+            :player-id="player.id"
+            :cards="cards"
+            :is-dragging="isDragging"
+            :handle-drag-start="handleDragStart"
+            :handle-drag-end="handleDragEnd"
+            :handle-drag-over="handleDragOver"
+            :handle-battle-drop="handleBattleDrop"
+          />
+          <PlayerPanel
+            :player="player"
+            :cards="cards"
+            :is-active="true"
+            :is-self-view="true"
+            :handle-drag-start="handleDragStart"
+            :handle-drag-end="handleDragEnd"
+            :handle-drag-over="handleDragOver"
+            :handle-drop="handleDrop"
+            @card-double-click="onPlayerCardDoubleClick"
+          />
+        </template>
       </template>
     </div>
     
@@ -83,16 +101,6 @@
       :handle-drop="handleDrop"
       :handle-drop-to-header="handleDropToHeader"
       :toggle-card-disguise="toggleCardDisguise"
-    />
-
-    <!-- PK对战区 -->
-    <BattleZone
-      :cards="cards"
-      :is-dragging="isDragging"
-      :handle-drag-start="handleDragStart"
-      :handle-drag-end="handleDragEnd"
-      :handle-drag-over="handleDragOver"
-      :handle-battle-drop="handleBattleDrop"
     />
     
     <!-- 拖拽时跟随鼠标的卡牌 -->
@@ -122,7 +130,7 @@ import TableHeader from './components/table/TableHeader.vue'
 import TableRow from './components/table/TableRow.vue'
 import PlayerPanel from './components/PlayerPanel.vue'
 import GameTable from './components/GameTable.vue'
-import BattleZone from './components/BattleZone.vue'
+import PlayerBattleZone from './components/PlayerBattleZone.vue'
 import { ref, computed, watch } from 'vue';
 import { useDragAndDrop } from './composables/useDragAndDrop.js'
 import { useGameLogic } from './composables/useGameLogic.js'
@@ -139,7 +147,8 @@ export default {
     TableHeader,
     TableRow,
     PlayerPanel,
-    GameTable
+    GameTable,
+    PlayerBattleZone
   },
   setup() {
     // 使用游戏逻辑
@@ -214,7 +223,7 @@ export default {
       showCardModal.value = true
     }
 
-    // 处理PK对战区的拖拽放置事件
+    // 处理玩家对战区的拖拽放置事件
     const handleBattleDrop = (rowZoneId, colZoneId, cards, battleStarted, updateBattleState, event) => {
       // 检查是否是玩家一的操作
       const currentPlayer = players.value.find(p => p.id === selectedPlayerId.value);
@@ -247,11 +256,11 @@ export default {
       if (!battleStarted) {
         // 开始战斗
         updateBattleState(true);
-        // 移动卡牌到PK对战区
-        moveCard(draggingCard.id, { row: draggingCard.owner, col: draggingCard.to }, { row: 'battle', col: null });
+        // 移动卡牌到对应玩家的对战区
+        moveCard(draggingCard.id, { row: draggingCard.owner, col: draggingCard.to }, { row: rowZoneId, col: null });
       } else {
         // 战斗已开始，可以放置更多卡牌到对战区
-        moveCard(draggingCard.id, { row: draggingCard.owner, col: draggingCard.to }, { row: 'battle', col: null });
+        moveCard(draggingCard.id, { row: draggingCard.owner, col: draggingCard.to }, { row: rowZoneId, col: null });
       }
     }
     

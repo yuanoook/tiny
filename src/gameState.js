@@ -69,24 +69,24 @@ const addEmptyCardsForPlayers = (players, cards) => {
   return cards;
 };
 
-// 获取所有区域（新牌堆 + 玩家区域 + 弃牌堆 + PK对战区）
+// 获取所有区域（新牌堆 + 玩家区域 + 弃牌堆 + 玩家对战区）
 const getAllZones = (baseZones, players) => {
   // 先获取新牌堆
   const deckZone = baseZones.find(zone => zone.id === 'deck');
   // 获取弃牌堆
   const discardZone = baseZones.find(zone => zone.id === 'discard');
-  // 获取玩家区域
-  const playerZones = players.map(player => ({ id: player.id, name: player.name }));
   
-  // 添加PK对战区
-  const battleZone = { id: 'battle', name: 'PK对战区' };
+  // 为每个玩家创建区域和对应的对战区
+  const playerZones = players.flatMap(player => [
+    { id: player.id, name: `${player.name}区域` },
+    { id: `battle-${player.id}`, name: `${player.name}对战区` }
+  ]);
   
-  // 返回排序后的区域：新牌堆 + 玩家区域 + 弃牌堆 + PK对战区
+  // 返回排序后的区域：新牌堆 + 玩家区域 + 弃牌堆 + 玩家对战区
   return [
     deckZone,
     ...playerZones,
-    discardZone,
-    battleZone
+    discardZone
   ].filter(zone => zone !== undefined);
 };
 
