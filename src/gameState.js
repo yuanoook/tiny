@@ -69,7 +69,7 @@ const addEmptyCardsForPlayers = (players, cards) => {
   return cards;
 };
 
-// 获取所有区域（新牌堆 + 玩家区域 + 弃牌堆）
+// 获取所有区域（新牌堆 + 玩家区域 + 弃牌堆 + PK对战区）
 const getAllZones = (baseZones, players) => {
   // 先获取新牌堆
   const deckZone = baseZones.find(zone => zone.id === 'deck');
@@ -78,11 +78,15 @@ const getAllZones = (baseZones, players) => {
   // 获取玩家区域
   const playerZones = players.map(player => ({ id: player.id, name: player.name }));
   
-  // 返回排序后的区域：新牌堆 + 玩家区域 + 弃牌堆
+  // 添加PK对战区
+  const battleZone = { id: 'battle', name: 'PK对战区' };
+  
+  // 返回排序后的区域：新牌堆 + 玩家区域 + 弃牌堆 + PK对战区
   return [
     deckZone,
     ...playerZones,
-    discardZone
+    discardZone,
+    battleZone
   ].filter(zone => zone !== undefined);
 };
 

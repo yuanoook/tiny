@@ -84,6 +84,16 @@
       :handle-drop-to-header="handleDropToHeader"
       :toggle-card-disguise="toggleCardDisguise"
     />
+
+    <!-- PK对战区 -->
+    <BattleZone
+      :cards="cards"
+      :is-dragging="isDragging"
+      :handle-drag-start="handleDragStart"
+      :handle-drag-end="handleDragEnd"
+      :handle-drag-over="handleDragOver"
+      :handle-battle-drop="handleBattleDrop"
+    />
     
     <!-- 拖拽时跟随鼠标的卡牌 -->
     <CardDot
@@ -112,6 +122,7 @@ import TableHeader from './components/table/TableHeader.vue'
 import TableRow from './components/table/TableRow.vue'
 import PlayerPanel from './components/PlayerPanel.vue'
 import GameTable from './components/GameTable.vue'
+import BattleZone from './components/BattleZone.vue'
 import { ref, computed, watch } from 'vue';
 import { useDragAndDrop } from './composables/useDragAndDrop.js'
 import { useGameLogic } from './composables/useGameLogic.js'
@@ -202,6 +213,47 @@ export default {
       currentCard.value = card
       showCardModal.value = true
     }
+
+    // 处理PK对战区的拖拽放置事件
+    const handleBattleDrop = (rowZoneId, colZoneId, cards, battleStarted, updateBattleState, event) => {
+      // 检查是否是玩家一的操作
+      const currentPlayer = players.value.find(p => p.id === selectedPlayerId.value);
+      if (!currentPlayer || currentPlayer.id !== 'player1') {
+        return;
+      }
+
+      // 获取拖拽的卡牌
+      const data = event.dataTransfer.getData('text/plain');
+      if (!data) return;
+      
+      let cardData;
+      try {
+        cardData = JSON.parse(data);
+      } catch (e) {
+        console.error('Failed to parse drag data:', e);
+        return;
+      }
+      
+      const draggingCard = cards.find(card => card.id === cardData.id);
+      if (!draggingCard) return;
+      
+      // 检查是否是黄色类型或伪装成黄色类型的卡牌
+      if (!isYellowCard(draggingCard)) {
+        console.log('只有黄色类型或伪装成黄色类型的卡牌才能用于战斗');
+        return;
+      }
+      
+      // 如果战斗尚未开始，第一张牌必须是黄色类型或伪装为黄色类型
+      if (!battleStarted) {
+        // 开始战斗
+        updateBattleState(true);
+        // 移动卡牌到PK对战区
+        moveCard(draggingCard.id, { row: draggingCard.owner, col: draggingCard.to }, { row: 'battle', col: null });
+      } else {
+        // 战斗已开始，可以放置更多卡牌到对战区
+        moveCard(draggingCard.id, { row: draggingCard.owner, col: draggingCard.to }, { row: 'battle', col: null });
+      }
+    }
     
     // 添加选中玩家的响应式变量
     const selectedPlayerId = ref(null)
@@ -286,6 +338,7 @@ export default {
       handleDragEnd,
       handleDrop,
       handleDropToHeader,
+      handleBattleDrop,
       getCardsInCell,
       getCardsInRowHeader,
       getCardsInColumnHeader,
