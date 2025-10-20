@@ -76,8 +76,8 @@ export function useDragAndDrop(cards) {
     handleDocumentDragOver(event);
   };
 
-  // 处理放置到单元格
-  const handleDrop = (rowZoneId, colZoneId, cards) => {
+  // 处理放置操作的公共逻辑
+  const handleDropCommon = (targetZoneId, targetColZoneId, cards, isHeaderDrop = false) => {
     // 阻止默认行为
     event.preventDefault();
     
@@ -89,7 +89,7 @@ export function useDragAndDrop(cards) {
       if (originalCard.isPrototype) {
         // 获取新卡牌编号
         const cardNo = getNewCardNo();
-        const newCard = createNewCard(cardNo, rowZoneId, colZoneId);
+        const newCard = createNewCard(cardNo, targetZoneId, targetColZoneId);
         
         // 如果原型卡牌设置了伪装，确保新卡牌也保持伪装状态
         if (originalCard.isDisguised && originalCard.disguiseColor) {
@@ -104,21 +104,24 @@ export function useDragAndDrop(cards) {
         recordGlobalHistory('createCard', {
           cardId: newCard.id,
           cardNo: cardNo,
-          owner: rowZoneId,
-          to: colZoneId
+          owner: targetZoneId,
+          to: targetColZoneId
         });
       } else {
         // 对于非原型卡牌，使用moveCardToZone获取更新后的数组并替换原数组
-        const updatedCards = moveCardToZone(cards, draggingCard.value.id, rowZoneId, colZoneId);
+        const updatedCards = moveCardToZone(cards, draggingCard.value.id, targetZoneId, targetColZoneId);
         
         // 使用splice和展开运算符来替换整个cards数组，确保Vue能检测到变化
         cards.splice(0, cards.length, ...updatedCards);
         
         // 记录全局历史
+        const from = { row: draggingCard.value.owner, col: draggingCard.value.to };
+        const to = { row: targetZoneId, col: targetColZoneId };
+        
         recordGlobalHistory('moveCard', {
           cardId: draggingCard.value.id,
-          from: { row: draggingCard.value.owner, col: draggingCard.value.to },
-          to: { row: rowZoneId, col: colZoneId }
+          from,
+          to
         });
       }
       
@@ -131,59 +134,14 @@ export function useDragAndDrop(cards) {
     }
   };
 
+  // 处理放置到单元格
+  const handleDrop = (rowZoneId, colZoneId, cards) => {
+    handleDropCommon(rowZoneId, colZoneId, cards, false);
+  };
+
   // 处理放置到表头
   const handleDropToHeader = (zoneId, cards) => {
-    // 阻止默认行为
-    event.preventDefault();
-    
-    if (draggingCard.value) {
-      // 保存原始拖拽卡牌的引用
-      const originalCard = originalDraggingCard.value || draggingCard.value;
-      
-      // 只有原型空心牌才能创建新卡牌
-      if (originalCard.isPrototype) {
-        // 获取新卡牌编号
-        const cardNo = getNewCardNo();
-        const newCard = createNewCard(cardNo, zoneId);
-        
-        // 如果原型卡牌设置了伪装，确保新卡牌也保持伪装状态
-        if (originalCard.isDisguised && originalCard.disguiseColor) {
-          newCard.isDisguised = true;
-          newCard.disguiseColor = originalCard.disguiseColor;
-        }
-        
-        // 添加新卡牌到cards数组
-        cards.push(newCard);
-        
-        // 记录全局历史
-        recordGlobalHistory('createCard', {
-          cardId: newCard.id,
-          cardNo: cardNo,
-          owner: zoneId,
-          to: null
-        });
-      } else {
-        // 对于非原型卡牌，使用moveCardToZone获取更新后的数组并替换原数组
-        const updatedCards = moveCardToZone(cards, draggingCard.value.id, zoneId, null);
-        
-        // 使用splice和展开运算符来替换整个cards数组，确保Vue能检测到变化
-        cards.splice(0, cards.length, ...updatedCards);
-        
-        // 记录全局历史
-        recordGlobalHistory('moveCard', {
-          cardId: draggingCard.value.id,
-          from: { row: draggingCard.value.owner, col: draggingCard.value.to },
-          to: { row: zoneId, col: null }
-        });
-      }
-      
-      // 重置拖拽状态
-      draggingCard.value = null;
-      originalDraggingCard.value = null;
-      
-      // 移除鼠标移动事件监听器
-      document.removeEventListener('mousemove', handleDocumentDragOver);
-    }
+    handleDropCommon(zoneId, null, cards, true);
   };
 
     // 计算拖拽卡牌的样式
