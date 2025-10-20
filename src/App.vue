@@ -46,6 +46,8 @@
           :is-self-view="false"
           :handle-drag-start="handleDragStart"
           :handle-drag-end="handleDragEnd"
+          :handle-drag-over="handleDragOver"
+          :handle-drop="handleDrop"
           @card-double-click="onPlayerCardDoubleClick"
         />
       </template>
@@ -60,6 +62,8 @@
           :is-self-view="true"
           :handle-drag-start="handleDragStart"
           :handle-drag-end="handleDragEnd"
+          :handle-drag-over="handleDragOver"
+          :handle-drop="handleDrop"
           @card-double-click="onPlayerCardDoubleClick"
         />
       </template>

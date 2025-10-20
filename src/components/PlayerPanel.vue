@@ -6,7 +6,11 @@
     </div>
     
     <!-- 玩家的卡牌区域 - 包含所有卡牌 -->
-    <div class="player-hand">
+    <div 
+      class="player-hand"
+      @dragover.prevent="handleDragOver"
+      @drop="handleDrop(player.id, null, cards)"
+    >
       <Card
         v-for="card in playerCards"
         :key="`player-card-${card.id}`"
@@ -51,6 +55,14 @@ export default {
       required: true
     },
     handleDragEnd: {
+      type: Function,
+      required: true
+    },
+    handleDragOver: {
+      type: Function,
+      required: true
+    },
+    handleDrop: {
       type: Function,
       required: true
     }
